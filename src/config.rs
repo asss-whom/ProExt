@@ -156,7 +156,7 @@ pub mod ProgramConfig {
         pub const InitAddressesMaxAttempts: u32 = 15;
 
         pub mod Window {
-            pub const Title: &str = "Counter-Strike 2";
+            pub const Title: &str = "反恐精英：全球攻势";
             pub const Class: &str = "SDL_app";
         }
     }
