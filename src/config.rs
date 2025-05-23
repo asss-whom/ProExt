@@ -3,12 +3,12 @@
 pub mod Offsets {
     // https://raw.githubusercontent.com/a2x/cs2-dumper/refs/heads/main/output/offsets.rs
     pub mod client_dll {
-        pub const dwEntityList: usize = 0x1A1F730;
-        pub const dwLocalPlayerController: usize = 0x1A6E9C0;
-        pub const dwLocalPlayerPawn: usize = 0x1874050;
-        pub const dwPlantedC4: usize = 0x1A8E4A0;
-        pub const dwViewAngles: usize = 0x1A933C0;
-        pub const dwViewMatrix: usize = 0x1A89130;
+        pub const dwEntityList: usize = 0x19FEE38;
+        pub const dwLocalPlayerController: usize = 0x1A4D840;
+        pub const dwLocalPlayerPawn: usize = 0x18530D0;
+        pub const dwPlantedC4: usize = 0x1A6D068;
+        pub const dwViewAngles: usize = 0x1A72390;
+        pub const dwViewMatrix: usize = 0x1A67FA0;
     }
 
     // https://raw.githubusercontent.com/a2x/cs2-dumper/refs/heads/main/output/client_dll.rs
@@ -26,8 +26,8 @@ pub mod Offsets {
     }
 
     pub mod CCSPlayerController {
-        pub const m_hPlayerPawn: usize = 0x814; // CHandle<C_CSPlayerPawn>
-        pub const m_bPawnIsAlive: usize = 0x81C; // bool
+        pub const m_hPlayerPawn: usize = 0x824; // CHandle<C_CSPlayerPawn>
+        pub const m_bPawnIsAlive: usize = 0x82C; // bool
     }
 
     pub mod C_BasePlayerPawn {
