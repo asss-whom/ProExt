@@ -1,7 +1,5 @@
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LazyLock, Mutex};
 use std::time::Instant;
-
-use lazy_static::lazy_static;
 
 use windows::Win32::UI::Input::KeyboardAndMouse::{
     SendInput, INPUT, INPUT_MOUSE, MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP, MOUSEEVENTF_MOVE,
@@ -9,10 +7,9 @@ use windows::Win32::UI::Input::KeyboardAndMouse::{
 };
 use windows::Win32::UI::WindowsAndMessaging::GetCursorPos;
 
-lazy_static! {
-    pub static ref MOUSE_LOCKED: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
-    pub static ref LAST_MOVED: Arc<Mutex<Instant>> = Arc::new(Mutex::new(Instant::now()));
-}
+pub static MOUSE_LOCKED: LazyLock<Arc<Mutex<bool>>> = LazyLock::new(|| Arc::new(Mutex::new(false)));
+pub static LAST_MOVED: LazyLock<Arc<Mutex<Instant>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(Instant::now())));
 
 pub fn create_mouse_input(
     flags: MOUSE_EVENT_FLAGS,

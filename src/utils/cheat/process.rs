@@ -1,9 +1,7 @@
 use std::ffi::{c_void, OsString};
 use std::mem;
 use std::os::windows::prelude::OsStringExt;
-use std::sync::{Arc, Mutex};
-
-use lazy_static::lazy_static;
+use std::sync::{Arc, LazyLock, Mutex};
 
 use windows::Win32::Foundation::{CloseHandle, HANDLE};
 use windows::Win32::System::Diagnostics::Debug::ReadProcessMemory;
@@ -24,14 +22,14 @@ pub struct Process {
 
 unsafe impl Send for Process {}
 
-lazy_static! {
-    pub static ref PROCESS: Arc<Mutex<Process>> = Arc::new(Mutex::new(Process {
+pub static PROCESS: LazyLock<Arc<Mutex<Process>>> = LazyLock::new(|| {
+    Arc::new(Mutex::new(Process {
         attached: false,
         h_process: HANDLE::default(),
         process_id: 0,
-        module_address: 0
-    }));
-}
+        module_address: 0,
+    }))
+});
 
 pub fn attach_process() -> Option<String> {
     let process_name = ProgramConfig::TargetProcess::Executable;

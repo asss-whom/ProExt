@@ -1,7 +1,5 @@
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LazyLock, Mutex};
 use std::time::Instant;
-
-use lazy_static::lazy_static;
 
 use mint::Vector2;
 use rand::{rngs::ThreadRng, Rng};
@@ -12,13 +10,12 @@ use crate::utils::mouse::move_mouse;
 use crate::cheat::classes::entity::CUtlVector;
 use crate::cheat::functions::{cache_to_punch, is_feature_toggled, WeaponType};
 
-lazy_static! {
-    pub static ref FEATURE_TOGGLED: Arc<Mutex<bool>> =
-        Arc::new(Mutex::new(CONFIG.lock().unwrap().rcs.default));
-    pub static ref TOGGLE_CHANGED: Arc<Mutex<Instant>> = Arc::new(Mutex::new(Instant::now()));
-    pub static ref LAST_PUNCH: Arc<Mutex<Vector2<f32>>> =
-        Arc::new(Mutex::new(Vector2 { x: 0.0, y: 0.0 }));
-}
+pub static FEATURE_TOGGLED: LazyLock<Arc<Mutex<bool>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(CONFIG.lock().unwrap().rcs.default)));
+pub static TOGGLE_CHANGED: LazyLock<Arc<Mutex<Instant>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(Instant::now())));
+pub static LAST_PUNCH: LazyLock<Arc<Mutex<Vector2<f32>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(Vector2 { x: 0.0, y: 0.0 })));
 
 pub fn get_rcs_toggled(config: Config) -> bool {
     let feature = config.rcs;

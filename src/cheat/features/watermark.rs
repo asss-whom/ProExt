@@ -1,7 +1,5 @@
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LazyLock, Mutex};
 use std::time::SystemTime;
-
-use lazy_static::lazy_static;
 
 use imgui::Ui;
 use mint::Vector4;
@@ -11,10 +9,8 @@ use crate::config::ProgramConfig;
 use crate::ui::functions::color_u32_to_f32;
 use crate::utils::cheat::config::{Config, CONFIG};
 
-lazy_static! {
-    pub static ref WATERMARK_RESET_POSITION: Arc<Mutex<Option<[f32; 2]>>> =
-        Arc::new(Mutex::new(None));
-}
+pub static WATERMARK_RESET_POSITION: LazyLock<Arc<Mutex<Option<[f32; 2]>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(None)));
 
 pub fn get_current_time() -> String {
     let now = SystemTime::now();

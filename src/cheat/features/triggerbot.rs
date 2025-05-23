@@ -1,7 +1,5 @@
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LazyLock, Mutex};
 use std::time::{Duration, Instant};
-
-use lazy_static::lazy_static;
 
 use mint::Vector3;
 use rand::{rngs::ThreadRng, Rng};
@@ -11,15 +9,16 @@ use crate::utils::mouse::{click_mouse, press_mouse, release_mouse, MOUSE_LOCKED}
 use crate::cheat::functions::{calculate_distance, is_feature_toggled, WeaponType};
 use crate::utils::cheat::config::{Config, TriggerbotConfig, TriggerbotConfigs, CONFIG};
 
-lazy_static! {
-    pub static ref FEATURE_TOGGLED: Arc<Mutex<bool>> =
-        Arc::new(Mutex::new(CONFIG.lock().unwrap().triggerbot.default));
-    pub static ref TOGGLE_CHANGED: Arc<Mutex<Instant>> = Arc::new(Mutex::new(Instant::now()));
-    pub static ref TB_SHOT_ENTITY: Arc<Mutex<Instant>> = Arc::new(Mutex::new(Instant::now()));
-    pub static ref TB_LOCKED_ENTITY: Arc<Mutex<Option<(Instant, u64)>>> =
-        Arc::new(Mutex::new(None));
-    pub static ref TB_OFF_ENTITY: Arc<Mutex<Option<Instant>>> = Arc::new(Mutex::new(None));
-}
+pub static FEATURE_TOGGLED: LazyLock<Arc<Mutex<bool>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(CONFIG.lock().unwrap().triggerbot.default)));
+pub static TOGGLE_CHANGED: LazyLock<Arc<Mutex<Instant>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(Instant::now())));
+pub static TB_SHOT_ENTITY: LazyLock<Arc<Mutex<Instant>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(Instant::now())));
+pub static TB_LOCKED_ENTITY: LazyLock<Arc<Mutex<Option<(Instant, u64)>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(None)));
+pub static TB_OFF_ENTITY: LazyLock<Arc<Mutex<Option<Instant>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(None)));
 
 pub fn get_triggerbot_toggled(config: Config) -> bool {
     let feature = config.triggerbot;

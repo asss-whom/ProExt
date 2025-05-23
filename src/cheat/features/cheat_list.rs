@@ -1,5 +1,4 @@
-use lazy_static::lazy_static;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LazyLock, Mutex};
 
 use imgui::Ui;
 use mint::Vector4;
@@ -9,10 +8,8 @@ use crate::utils::cheat::config::{Config, CONFIG};
 
 use crate::ui::functions::color_u32_to_f32;
 
-lazy_static! {
-    pub static ref CHEAT_LIST_RESET_POSITION: Arc<Mutex<Option<[f32; 2]>>> =
-        Arc::new(Mutex::new(None));
-}
+pub static CHEAT_LIST_RESET_POSITION: LazyLock<Arc<Mutex<Option<[f32; 2]>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(None)));
 
 pub fn render_cheat_list(
     ui: &mut Ui,

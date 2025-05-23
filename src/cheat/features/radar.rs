@@ -1,8 +1,6 @@
 use std::f32::consts::PI;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LazyLock, Mutex};
 use std::time::Instant;
-
-use lazy_static::lazy_static;
 
 use imgui::{ImColor32, Ui};
 use mint::{Vector2, Vector3};
@@ -12,12 +10,12 @@ use crate::utils::cheat::config::{Config, CONFIG};
 
 use crate::ui::functions::{color_u32_to_f32, color_with_masked_alpha};
 
-lazy_static! {
-    pub static ref FEATURE_TOGGLED: Arc<Mutex<bool>> =
-        Arc::new(Mutex::new(CONFIG.lock().unwrap().esp.default));
-    pub static ref TOGGLE_CHANGED: Arc<Mutex<Instant>> = Arc::new(Mutex::new(Instant::now()));
-    pub static ref RADAR_RESET_POSITION: Arc<Mutex<Option<[f32; 2]>>> = Arc::new(Mutex::new(None));
-}
+pub static FEATURE_TOGGLED: LazyLock<Arc<Mutex<bool>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(CONFIG.lock().unwrap().esp.default)));
+pub static TOGGLE_CHANGED: LazyLock<Arc<Mutex<Instant>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(Instant::now())));
+pub static RADAR_RESET_POSITION: LazyLock<Arc<Mutex<Option<[f32; 2]>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(None)));
 
 pub fn get_radar_toggled(config: Config) -> bool {
     let feature = config.radar;

@@ -1,8 +1,7 @@
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LazyLock, Mutex};
 
 use imgui::{TabBar, TabItem, Ui};
-use lazy_static::lazy_static;
 
 use crate::config::ProgramConfig;
 
@@ -15,12 +14,12 @@ use crate::utils::cheat::config::{
 use crate::utils::messagebox::{create_messagebox, MessageBoxStyle};
 use crate::utils::open::open_url;
 
-lazy_static! {
-    static ref NEW_CONFIG_NAME: Arc<Mutex<String>> = Arc::new(Mutex::new(String::new()));
-    static ref LOADED_CONFIG: Arc<Mutex<Option<String>>> =
-        Arc::new(Mutex::new(Some(DEFAULT_CONFIG.clone())));
-    pub static ref MENU_RESET_POSITION: Arc<Mutex<Option<[f32; 2]>>> = Arc::new(Mutex::new(None));
-}
+static NEW_CONFIG_NAME: LazyLock<Arc<Mutex<String>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(String::new())));
+static LOADED_CONFIG: LazyLock<Arc<Mutex<Option<String>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(Some(DEFAULT_CONFIG.clone()))));
+pub static MENU_RESET_POSITION: LazyLock<Arc<Mutex<Option<[f32; 2]>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(None)));
 
 pub fn render_menu(ui: &mut Ui) {
     let mut config = CONFIG.lock().unwrap();

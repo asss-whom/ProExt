@@ -1,9 +1,7 @@
 use std::process;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LazyLock, Mutex};
 use std::thread::{self, sleep};
 use std::time::Instant;
-
-use lazy_static::lazy_static;
 
 use glow::{HasContext, COLOR_BUFFER_BIT};
 use mki::{Action, InhibitEvent, State};
@@ -30,10 +28,9 @@ use crate::utils::ui::windows::{
     focus_window, get_glow_context, get_window_info, is_window_focused, Window,
 };
 
-lazy_static! {
-    pub static ref MOUSE_POS: Arc<Mutex<Option<(i32, i32)>>> = Arc::new(Mutex::new(None));
-    pub static ref FOCUS_SELF: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
-}
+pub static MOUSE_POS: LazyLock<Arc<Mutex<Option<(i32, i32)>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(None)));
+pub static FOCUS_SELF: LazyLock<Arc<Mutex<bool>>> = LazyLock::new(|| Arc::new(Mutex::new(false)));
 
 #[derive(Clone)]
 struct HwndWrapper(HWND);

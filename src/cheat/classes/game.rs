@@ -1,5 +1,4 @@
-use lazy_static::lazy_static;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LazyLock, Mutex};
 
 use crate::cheat::classes::view::View;
 use crate::config::Offsets::client_dll::{
@@ -8,8 +7,8 @@ use crate::config::Offsets::client_dll::{
 };
 use crate::utils::cheat::process::{get_process_module_handle, rpm_auto, rpm_offset};
 
-lazy_static! {
-    pub static ref GAME: Arc<Mutex<Game>> = Arc::new(Mutex::new(Game {
+pub static GAME: LazyLock<Arc<Mutex<Game>>> = LazyLock::new(|| {
+    Arc::new(Mutex::new(Game {
         address: Address {
             client_dll: 0,
             entity_list: 0,
@@ -18,18 +17,18 @@ lazy_static! {
             entity_list_entry: 0,
             local_controller: 0,
             local_pawn: 0,
-            bomb: 0
+            bomb: 0,
         },
         view: View {
             matrix: [
                 [0.0, 0.0, 0.0, 0.0],
                 [0.0, 0.0, 0.0, 0.0],
                 [0.0, 0.0, 0.0, 0.0],
-                [0.0, 0.0, 0.0, 0.0]
-            ]
-        }
-    }));
-}
+                [0.0, 0.0, 0.0, 0.0],
+            ],
+        },
+    }))
+});
 
 #[derive(Clone)]
 pub struct Game {

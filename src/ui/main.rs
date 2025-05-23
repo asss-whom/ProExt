@@ -1,8 +1,7 @@
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LazyLock, Mutex};
 
 use glutin::event_loop::EventLoop;
-use lazy_static::lazy_static;
 
 use imgui::{Context, Ui};
 use imgui_winit_support::WinitPlatform;
@@ -18,15 +17,13 @@ use crate::utils::ui::windows::{
     create_window, find_window, set_window_brush_to_transparent, Window,
 };
 
-lazy_static! {
-    pub static ref WINDOW_INFO: Arc<Mutex<Option<((i32, i32), (i32, i32))>>> =
-        Arc::new(Mutex::new(None));
-    pub static ref RENDER_LIST: Arc<Mutex<HashMap<String, Box<dyn Fn(&mut Ui) + Send>>>> =
-        Arc::new(Mutex::new(HashMap::new()));
-    pub static ref TOGGLED: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
-    pub static ref EXIT: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
-    pub static ref BG_ALPHA: Arc<Mutex<f32>> = Arc::new(Mutex::new(0.2));
-}
+pub static WINDOW_INFO: LazyLock<Arc<Mutex<Option<((i32, i32), (i32, i32))>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(None)));
+pub static RENDER_LIST: LazyLock<Arc<Mutex<HashMap<String, Box<dyn Fn(&mut Ui) + Send>>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(HashMap::new())));
+pub static TOGGLED: LazyLock<Arc<Mutex<bool>>> = LazyLock::new(|| Arc::new(Mutex::new(false)));
+pub static EXIT: LazyLock<Arc<Mutex<bool>>> = LazyLock::new(|| Arc::new(Mutex::new(false)));
+pub static BG_ALPHA: LazyLock<Arc<Mutex<f32>>> = LazyLock::new(|| Arc::new(Mutex::new(0.2)));
 
 pub fn init_gui() {
     let mut rng = rng();

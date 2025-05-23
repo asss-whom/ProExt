@@ -1,13 +1,12 @@
 use std::fs::{create_dir_all, metadata, read_dir, remove_file, File, OpenOptions};
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, LazyLock};
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use directories::UserDirs;
 use indexmap::IndexMap;
-use lazy_static::lazy_static;
 
 use crate::config::ProgramConfig;
 
@@ -808,14 +807,15 @@ impl Config {
     }
 }
 
-lazy_static! {
-    pub static ref CONFIG_EXTENSION: String = "conf.json".to_string();
-    pub static ref DEFAULT_CONFIG: String = format!("Default.{}", CONFIG_EXTENSION.clone());
-    pub static ref CONFIG_DIR: Arc<Mutex<String>> = Arc::new(Mutex::new("".to_string()));
-    pub static ref CONFIGS: Arc<Mutex<IndexMap<String, Option<Config>>>> =
-        Arc::new(Mutex::new(IndexMap::new()));
-    pub static ref CONFIG: Arc<Mutex<Config>> = Arc::new(Mutex::new(Config::default()));
-}
+pub static CONFIG_EXTENSION: LazyLock<String> = LazyLock::new(|| "conf.json".to_string());
+pub static DEFAULT_CONFIG: LazyLock<String> =
+    LazyLock::new(|| format!("Default.{}", CONFIG_EXTENSION.clone()));
+pub static CONFIG_DIR: LazyLock<Arc<Mutex<String>>> =
+    LazyLock::new(|| Arc::new(Mutex::new("".to_string())));
+pub static CONFIGS: LazyLock<Arc<Mutex<IndexMap<String, Option<Config>>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(IndexMap::new())));
+pub static CONFIG: LazyLock<Arc<Mutex<Config>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(Config::default())));
 
 pub fn get_directory_dir(name: &str) -> Option<String> {
     if let Some(user_dirs) = UserDirs::new() {

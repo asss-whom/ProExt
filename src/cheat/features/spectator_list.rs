@@ -1,7 +1,5 @@
 use std::ops::BitAnd;
-use std::sync::{Arc, Mutex};
-
-use lazy_static::lazy_static;
+use std::sync::{Arc, LazyLock, Mutex};
 
 use imgui::Ui;
 use mint::Vector4;
@@ -12,10 +10,8 @@ use crate::ui::functions::color_u32_to_f32;
 use crate::utils::cheat::config::{Config, CONFIG};
 use crate::utils::cheat::process::rpm_offset;
 
-lazy_static! {
-    pub static ref SPECTATOR_LIST_RESET_POSITION: Arc<Mutex<Option<[f32; 2]>>> =
-        Arc::new(Mutex::new(None));
-}
+pub static SPECTATOR_LIST_RESET_POSITION: LazyLock<Arc<Mutex<Option<[f32; 2]>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(None)));
 
 pub fn is_spectating(
     entity_controller_address: u64,

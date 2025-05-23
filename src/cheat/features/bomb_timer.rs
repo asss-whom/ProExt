@@ -1,7 +1,5 @@
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LazyLock, Mutex};
 use std::time::{Duration, Instant};
-
-use lazy_static::lazy_static;
 
 use imgui::Ui;
 use mint::Vector4;
@@ -9,12 +7,11 @@ use mint::Vector4;
 use crate::ui::functions::color_u32_to_f32;
 use crate::utils::cheat::config::{Config, CONFIG};
 
-lazy_static! {
-    pub static ref IS_PLANTED: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
-    pub static ref PLANT_TIME: Arc<Mutex<Option<Instant>>> = Arc::new(Mutex::new(None));
-    pub static ref BOMB_TIMER_RESET_POSITION: Arc<Mutex<Option<[f32; 2]>>> =
-        Arc::new(Mutex::new(None));
-}
+pub static IS_PLANTED: LazyLock<Arc<Mutex<bool>>> = LazyLock::new(|| Arc::new(Mutex::new(false)));
+pub static PLANT_TIME: LazyLock<Arc<Mutex<Option<Instant>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(None)));
+pub static BOMB_TIMER_RESET_POSITION: LazyLock<Arc<Mutex<Option<[f32; 2]>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(None)));
 
 pub fn render_bomb_timer(
     ui: &mut Ui,

@@ -1,8 +1,7 @@
 use std::f32::consts::PI;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LazyLock, Mutex};
 use std::time::{Duration, Instant};
 
-use lazy_static::lazy_static;
 use rand::{rngs::ThreadRng, Rng};
 
 use imgui::Ui;
@@ -18,14 +17,14 @@ use crate::cheat::classes::bone::{BoneIndex, BoneJointPos};
 use crate::cheat::classes::view::View;
 use crate::cheat::functions::{is_feature_toggled, WeaponType};
 
-lazy_static! {
-    pub static ref FEATURE_TOGGLED: Arc<Mutex<bool>> =
-        Arc::new(Mutex::new(CONFIG.lock().unwrap().aimbot.default));
-    pub static ref TOGGLE_CHANGED: Arc<Mutex<Instant>> = Arc::new(Mutex::new(Instant::now()));
-    pub static ref AB_LOCKED_ENTITY: Arc<Mutex<Option<(Instant, u64)>>> =
-        Arc::new(Mutex::new(None));
-    pub static ref AB_OFF_ENTITY: Arc<Mutex<Option<Instant>>> = Arc::new(Mutex::new(None));
-}
+pub static FEATURE_TOGGLED: LazyLock<Arc<Mutex<bool>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(CONFIG.lock().unwrap().aimbot.default)));
+pub static TOGGLE_CHANGED: LazyLock<Arc<Mutex<Instant>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(Instant::now())));
+pub static AB_LOCKED_ENTITY: LazyLock<Arc<Mutex<Option<(Instant, u64)>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(None)));
+pub static AB_OFF_ENTITY: LazyLock<Arc<Mutex<Option<Instant>>>> =
+    LazyLock::new(|| Arc::new(Mutex::new(None)));
 
 pub fn get_aimbot_toggled(config: Config) -> bool {
     let mut toggled = FEATURE_TOGGLED.lock().unwrap();
