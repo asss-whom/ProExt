@@ -3,7 +3,10 @@ use std::time::Instant;
 
 use lazy_static::lazy_static;
 
-use windows::Win32::UI::Input::KeyboardAndMouse::{SendInput, INPUT, MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP, MOUSEEVENTF_MOVE, MOUSEINPUT, INPUT_MOUSE, MOUSE_EVENT_FLAGS};
+use windows::Win32::UI::Input::KeyboardAndMouse::{
+    SendInput, INPUT, INPUT_MOUSE, MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP, MOUSEEVENTF_MOVE,
+    MOUSEINPUT, MOUSE_EVENT_FLAGS,
+};
 use windows::Win32::UI::WindowsAndMessaging::GetCursorPos;
 
 lazy_static! {
@@ -11,12 +14,25 @@ lazy_static! {
     pub static ref LAST_MOVED: Arc<Mutex<Instant>> = Arc::new(Mutex::new(Instant::now()));
 }
 
-pub fn create_mouse_input(flags: MOUSE_EVENT_FLAGS, dx: i32, dy: i32, data: u32, extra_info: usize) -> INPUT {
+pub fn create_mouse_input(
+    flags: MOUSE_EVENT_FLAGS,
+    dx: i32,
+    dy: i32,
+    data: u32,
+    extra_info: usize,
+) -> INPUT {
     return INPUT {
         r#type: INPUT_MOUSE,
         Anonymous: windows::Win32::UI::Input::KeyboardAndMouse::INPUT_0 {
-            mi: MOUSEINPUT { dwFlags: flags, dx, dy, mouseData: data, dwExtraInfo: extra_info, time: 0 }
-        }
+            mi: MOUSEINPUT {
+                dwFlags: flags,
+                dx,
+                dy,
+                mouseData: data,
+                dwExtraInfo: extra_info,
+                time: 0,
+            },
+        },
     };
 }
 
@@ -49,7 +65,7 @@ pub fn release_mouse() {
 
 pub fn move_mouse(x: i32, y: i32, set_last_moved: bool) {
     send_input(create_mouse_input(MOUSEEVENTF_MOVE, x, y, 0, 0));
-    
+
     if set_last_moved {
         *LAST_MOVED.lock().unwrap() = Instant::now();
     }
@@ -58,7 +74,7 @@ pub fn move_mouse(x: i32, y: i32, set_last_moved: bool) {
 pub fn get_mouse_position() -> Option<(i32, i32)> {
     unsafe {
         let mut position = std::mem::zeroed();
-        
+
         if !GetCursorPos(&mut position).is_ok() {
             return None;
         }

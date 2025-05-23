@@ -1,9 +1,12 @@
-use std::sync::{Arc, Mutex};
 use lazy_static::lazy_static;
+use std::sync::{Arc, Mutex};
 
-use crate::utils::cheat::process::{get_process_module_handle, rpm_auto, rpm_offset};
-use crate::config::Offsets::client_dll::{dwEntityList, dwLocalPlayerController, dwLocalPlayerPawn, dwPlantedC4, dwViewAngles, dwViewMatrix};
 use crate::cheat::classes::view::View;
+use crate::config::Offsets::client_dll::{
+    dwEntityList, dwLocalPlayerController, dwLocalPlayerPawn, dwPlantedC4, dwViewAngles,
+    dwViewMatrix,
+};
+use crate::utils::cheat::process::{get_process_module_handle, rpm_auto, rpm_offset};
 
 lazy_static! {
     pub static ref GAME: Arc<Mutex<Game>> = Arc::new(Mutex::new(Game {
@@ -31,7 +34,7 @@ lazy_static! {
 #[derive(Clone)]
 pub struct Game {
     pub address: Address,
-    pub view: View
+    pub view: View,
 }
 
 #[derive(Clone)]
@@ -43,7 +46,7 @@ pub struct Address {
     pub entity_list_entry: u64,
     pub local_controller: u64,
     pub local_pawn: u64,
-    pub bomb: u64
+    pub bomb: u64,
 }
 
 pub fn init_game_address() -> bool {

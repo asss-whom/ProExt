@@ -1,21 +1,27 @@
 use glutin::event_loop::EventLoop;
 use glutin::platform::windows::WindowBuilderExtWindows;
-use glutin::{WindowedContext, PossiblyCurrent, window::WindowBuilder, ContextBuilder};
+use glutin::{window::WindowBuilder, ContextBuilder, PossiblyCurrent, WindowedContext};
 
-use windows::core::{PCWSTR, HSTRING};
-use windows::Win32::Foundation::{HWND, RECT, POINT};
-use windows::Win32::UI::WindowsAndMessaging::{GetClientRect, GetForegroundWindow, FindWindowW, IsWindow, SetWindowDisplayAffinity, WINDOW_DISPLAY_AFFINITY, GCLP_HBRBACKGROUND, SetClassLongPtrW, SetForegroundWindow};
+use windows::core::{HSTRING, PCWSTR};
+use windows::Win32::Foundation::{HWND, POINT, RECT};
 use windows::Win32::Graphics::Gdi::ClientToScreen;
+use windows::Win32::UI::WindowsAndMessaging::{
+    FindWindowW, GetClientRect, GetForegroundWindow, IsWindow, SetClassLongPtrW,
+    SetForegroundWindow, SetWindowDisplayAffinity, GCLP_HBRBACKGROUND, WINDOW_DISPLAY_AFFINITY,
+};
 
 pub type Window = WindowedContext<PossiblyCurrent>;
 
 pub fn find_window(title: &str, class: Option<&str>) -> Option<HWND> {
     unsafe {
         let hwnd = match class {
-            Some(class) => FindWindowW(&HSTRING::from(class.to_string()), &HSTRING::from(title.to_string())),
-            None => FindWindowW(PCWSTR::null(), &HSTRING::from(title.to_string()))
+            Some(class) => FindWindowW(
+                &HSTRING::from(class.to_string()),
+                &HSTRING::from(title.to_string()),
+            ),
+            None => FindWindowW(PCWSTR::null(), &HSTRING::from(title.to_string())),
         };
-        
+
         if let Ok(hwnd) = hwnd {
             if IsWindow(Some(hwnd)).into() {
                 return Some(hwnd);
@@ -27,10 +33,26 @@ pub fn find_window(title: &str, class: Option<&str>) -> Option<HWND> {
 }
 
 pub fn get_window_info(hwnd: HWND) -> Option<((i32, i32), (i32, i32))> {
-    let mut client_rect: RECT = RECT { left: 0, top: 0, right: 0, bottom: 0 };
-    let mut window_rect: RECT = RECT { left: 0, top: 0, right: 0, bottom: 0 };
-    let mut top_left = POINT { x: window_rect.left, y: window_rect.top };
-    let mut bottom_right = POINT { x: window_rect.right, y: window_rect.bottom };
+    let mut client_rect: RECT = RECT {
+        left: 0,
+        top: 0,
+        right: 0,
+        bottom: 0,
+    };
+    let mut window_rect: RECT = RECT {
+        left: 0,
+        top: 0,
+        right: 0,
+        bottom: 0,
+    };
+    let mut top_left = POINT {
+        x: window_rect.left,
+        y: window_rect.top,
+    };
+    let mut bottom_right = POINT {
+        x: window_rect.right,
+        y: window_rect.bottom,
+    };
 
     unsafe {
         match GetClientRect(hwnd, &mut client_rect as *mut RECT) {
@@ -46,11 +68,12 @@ pub fn get_window_info(hwnd: HWND) -> Option<((i32, i32), (i32, i32))> {
                 let client_width = client_rect.right - client_rect.left;
                 let client_height = client_rect.bottom - client_rect.top;
 
-                return Some(((window_rect.left, window_rect.top), (client_width, client_height)));
-            },
-            Err(_) => {
-                return None
+                return Some((
+                    (window_rect.left, window_rect.top),
+                    (client_width, client_height),
+                ));
             }
+            Err(_) => return None,
         }
     }
 }
@@ -65,7 +88,7 @@ pub fn hide_window_from_capture(hwnd: HWND, toggle: bool) -> bool {
     return unsafe {
         match SetWindowDisplayAffinity(hwnd, affinity) {
             Ok(_) => true,
-            Err(_) => false
+            Err(_) => false,
         }
     };
 }

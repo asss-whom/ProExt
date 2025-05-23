@@ -2,26 +2,42 @@ use std::mem::size_of;
 use std::ops::{BitAnd, Shl};
 use std::time::Instant;
 
-use mint::{Vector3, Vector2};
+use mint::{Vector2, Vector3};
 
-use crate::config::{ProgramConfig, Offsets};
-use crate::ui::functions::{hotkey_index_to_io, distance_between_vec3};
+use crate::config::{Offsets, ProgramConfig};
+use crate::ui::functions::{distance_between_vec3, hotkey_index_to_io};
 
-use crate::utils::cheat::process::{rpm_auto, rpm_offset, trace_address};
 use crate::cheat::classes::entity::CUtlVector;
+use crate::utils::cheat::process::{rpm_auto, rpm_offset, trace_address};
 
-pub fn is_enemy_at_crosshair(local_entity_pawn_address: u64, local_entity_controller_team_id: i32, game_address_entity_list: u64, exclude_team: bool) -> (bool, bool, u64, Option<Vector3<f32>>) {
+pub fn is_enemy_at_crosshair(
+    local_entity_pawn_address: u64,
+    local_entity_controller_team_id: i32,
+    game_address_entity_list: u64,
+    exclude_team: bool,
+) -> (bool, bool, u64, Option<Vector3<f32>>) {
     let mut u_handle: u32 = 0;
-    
-    if !rpm_offset(local_entity_pawn_address, Offsets::C_CSPlayerPawnBase::m_iIDEntIndex as u64, &mut u_handle) {
+
+    if !rpm_offset(
+        local_entity_pawn_address,
+        Offsets::C_CSPlayerPawnBase::m_iIDEntIndex as u64,
+        &mut u_handle,
+    ) {
         return (false, false, 0, None);
     }
 
-    if !rpm_offset(local_entity_pawn_address, Offsets::C_CSPlayerPawnBase::m_iIDEntIndex as u64, &mut u_handle) {
+    if !rpm_offset(
+        local_entity_pawn_address,
+        Offsets::C_CSPlayerPawnBase::m_iIDEntIndex as u64,
+        &mut u_handle,
+    ) {
         return (false, false, 0, None);
     }
 
-    let list_entry: u64 = trace_address(game_address_entity_list, &[0x8 * u_handle.wrapping_shr(9) + 0x10, 0x0]);
+    let list_entry: u64 = trace_address(
+        game_address_entity_list,
+        &[0x8 * u_handle.wrapping_shr(9) + 0x10, 0x0],
+    );
 
     if list_entry == 0 {
         return (false, false, 0, None);
@@ -37,25 +53,56 @@ pub fn is_enemy_at_crosshair(local_entity_pawn_address: u64, local_entity_contro
 
     let mut entity_team_id = 0;
     let mut entity_health = 0;
-    let mut entity_pos: Vector3<f32> = Vector3 { x: 0.0, y: 0.0, z: 0.0 };
+    let mut entity_pos: Vector3<f32> = Vector3 {
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+    };
 
-    if !rpm_offset(pawn_address, Offsets::C_BaseEntity::m_iTeamNum as u64, &mut entity_team_id) {
+    if !rpm_offset(
+        pawn_address,
+        Offsets::C_BaseEntity::m_iTeamNum as u64,
+        &mut entity_team_id,
+    ) {
         return (false, false, 0, None);
     }
 
-    if !rpm_offset(pawn_address, Offsets::C_BaseEntity::m_iHealth as u64, &mut entity_health) {
+    if !rpm_offset(
+        pawn_address,
+        Offsets::C_BaseEntity::m_iHealth as u64,
+        &mut entity_health,
+    ) {
         return (false, false, 0, None);
     }
 
-    if !rpm_offset(pawn_address, Offsets::C_BasePlayerPawn::m_vOldOrigin as u64, &mut entity_pos) {
+    if !rpm_offset(
+        pawn_address,
+        Offsets::C_BasePlayerPawn::m_vOldOrigin as u64,
+        &mut entity_pos,
+    ) {
         return (false, false, 0, None);
     }
 
-    return (true, if exclude_team { local_entity_controller_team_id != entity_team_id && entity_health > 0 } else { entity_health > 0 }, pawn_address, Some(entity_pos));
+    return (
+        true,
+        if exclude_team {
+            local_entity_controller_team_id != entity_team_id && entity_health > 0
+        } else {
+            entity_health > 0
+        },
+        pawn_address,
+        Some(entity_pos),
+    );
 }
 
-pub fn is_enemy_visible(b_spotted_by_mask: u64, local_b_spotted_by_mask: u64, local_player_controller_index: u64, i: u64) -> bool {
-    return b_spotted_by_mask.bitand((1 as u64).shl(local_player_controller_index)) != 0 || local_b_spotted_by_mask.bitand((1 as u64).shl(i)) != 0;
+pub fn is_enemy_visible(
+    b_spotted_by_mask: u64,
+    local_b_spotted_by_mask: u64,
+    local_player_controller_index: u64,
+    i: u64,
+) -> bool {
+    return b_spotted_by_mask.bitand((1 as u64).shl(local_player_controller_index)) != 0
+        || local_b_spotted_by_mask.bitand((1 as u64).shl(i)) != 0;
 }
 
 pub fn get_bomb(bomb_address: u64) -> Option<u64> {
@@ -89,7 +136,11 @@ pub fn get_bomb_planted(bomb_address: u64) -> bool {
 pub fn get_bomb_site(planted_bomb: u64) -> Option<String> {
     let mut site: u32 = 0;
 
-    if !rpm_offset(planted_bomb, Offsets::C_PlantedC4::m_nBombSite as u64, &mut site) {
+    if !rpm_offset(
+        planted_bomb,
+        Offsets::C_PlantedC4::m_nBombSite as u64,
+        &mut site,
+    ) {
         return None;
     }
 
@@ -103,13 +154,25 @@ pub fn get_bomb_site(planted_bomb: u64) -> Option<String> {
 pub fn get_bomb_position(planted_bomb: u64) -> Option<Vector3<f32>> {
     let mut bomb_node = 0;
 
-    if !rpm_offset(planted_bomb, Offsets::C_BaseEntity::m_pGameSceneNode as u64, &mut bomb_node) {
+    if !rpm_offset(
+        planted_bomb,
+        Offsets::C_BaseEntity::m_pGameSceneNode as u64,
+        &mut bomb_node,
+    ) {
         return None;
     }
 
-    let mut bomb_pos = Vector3 { x: 0.0, y: 0.0, z: 0.0 };
+    let mut bomb_pos = Vector3 {
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+    };
 
-    if !rpm_offset(bomb_node, Offsets::CGameSceneNode::m_vecAbsOrigin as u64, &mut bomb_pos) {
+    if !rpm_offset(
+        bomb_node,
+        Offsets::CGameSceneNode::m_vecAbsOrigin as u64,
+        &mut bomb_pos,
+    ) {
         return None;
     }
 
@@ -130,7 +193,7 @@ pub enum WeaponType {
     Fists,
     Knife,
     Other,
-    None
+    None,
 }
 
 pub fn has_weapon(weapon_type: WeaponType) -> bool {
@@ -141,7 +204,7 @@ pub fn has_weapon(weapon_type: WeaponType) -> bool {
         WeaponType::Sniper => true,
         WeaponType::Shotgun => true,
         WeaponType::MachineGun => true,
-        _ => false
+        _ => false,
     };
 }
 
@@ -192,7 +255,7 @@ pub fn parse_weapon(name: String) -> (WeaponType, &'static str) {
         "ump45" => (WeaponType::Submachine, "UMP-45"),
         "usp_silencer" => (WeaponType::Pistol, "USP-S"),
         "xm1014" => (WeaponType::Shotgun, "XM1014"),
-        _ => (WeaponType::Other, "")
+        _ => (WeaponType::Other, ""),
     };
 }
 
@@ -203,7 +266,10 @@ pub fn cache_to_punch(aim_punch_cache: CUtlVector) -> Option<Vector2<f32>> {
         return None;
     }
 
-    if !rpm_auto(aim_punch_cache.data + (aim_punch_cache.count - 1) * size_of::<Vector3<f32>>() as u64, &mut punch) {
+    if !rpm_auto(
+        aim_punch_cache.data + (aim_punch_cache.count - 1) * size_of::<Vector3<f32>>() as u64,
+        &mut punch,
+    ) {
         return None;
     }
 
@@ -218,14 +284,19 @@ pub fn is_io_pressed(key: usize) -> bool {
     match hotkey_index_to_io(key) {
         Ok(button) => {
             return button.is_pressed();
-        },
+        }
         Err(key) => {
             return key.is_pressed();
         }
     }
 }
 
-pub fn is_feature_toggled(key: usize, mode: usize, toggle_toggled: &mut bool, toggle_changed: &mut Instant) -> bool {
+pub fn is_feature_toggled(
+    key: usize,
+    mode: usize,
+    toggle_toggled: &mut bool,
+    toggle_changed: &mut Instant,
+) -> bool {
     let pressed = is_io_pressed(key);
 
     if mode == 0 {

@@ -1,6 +1,6 @@
-use std::fs::{File, OpenOptions, read_dir, metadata, create_dir_all, remove_file};
-use std::sync::{Arc, Mutex};
+use std::fs::{create_dir_all, metadata, read_dir, remove_file, File, OpenOptions};
 use std::path::PathBuf;
+use std::sync::{Arc, Mutex};
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -63,7 +63,7 @@ pub struct ESP {
     pub snap_line_color: (u32, u32, u32, u32),
     pub snap_line_mode: usize,
     pub headshot_line_enabled: bool,
-    pub headshot_line_color: (u32, u32, u32, u32)
+    pub headshot_line_color: (u32, u32, u32, u32),
 }
 
 impl Default for ESP {
@@ -119,7 +119,7 @@ impl Default for ESP {
             snap_line_color: (255, 255, 255, 255),
             snap_line_mode: 1,
             headshot_line_enabled: false,
-            headshot_line_color: (255, 255, 255, 255)
+            headshot_line_color: (255, 255, 255, 255),
         };
     }
 }
@@ -130,7 +130,7 @@ pub struct RCSConfig {
     pub yaw: f32,
     pub yaw_offset: f32,
     pub pitch: f32,
-    pub pitch_offset: f32
+    pub pitch_offset: f32,
 }
 
 impl Default for RCSConfig {
@@ -140,7 +140,7 @@ impl Default for RCSConfig {
             yaw: 1.0,
             yaw_offset: 0.2,
             pitch: 1.0,
-            pitch_offset: 0.2
+            pitch_offset: 0.2,
         };
     }
 }
@@ -154,7 +154,7 @@ pub struct RCSConfigs {
     pub sniper: RCSConfig,
     pub shotgun: RCSConfig,
     pub machinegun: RCSConfig,
-    pub other: RCSConfig
+    pub other: RCSConfig,
 }
 
 impl Default for RCSConfigs {
@@ -167,7 +167,7 @@ impl Default for RCSConfigs {
             sniper: RCSConfig::default(),
             shotgun: RCSConfig::default(),
             machinegun: RCSConfig::default(),
-            other: RCSConfig::default()
+            other: RCSConfig::default(),
         };
     }
 }
@@ -181,7 +181,7 @@ pub struct RCS {
     pub default: bool,
     pub shared: bool,
     pub sensitivity: f32,
-    pub configs: RCSConfigs
+    pub configs: RCSConfigs,
 }
 
 impl Default for RCS {
@@ -194,7 +194,7 @@ impl Default for RCS {
             default: true,
             shared: false,
             sensitivity: 3.0,
-            configs: RCSConfigs::default()
+            configs: RCSConfigs::default(),
         };
     }
 }
@@ -222,7 +222,7 @@ pub struct AimbotConfig {
     pub min_distance_enabled: bool,
     pub min_distance: u32,
     pub max_distance_enabled: bool,
-    pub max_distance: u32
+    pub max_distance: u32,
 }
 
 impl Default for AimbotConfig {
@@ -249,7 +249,7 @@ impl Default for AimbotConfig {
             min_distance_enabled: false,
             min_distance: 150,
             max_distance_enabled: false,
-            max_distance: 0
+            max_distance: 0,
         };
     }
 }
@@ -272,7 +272,7 @@ pub struct AimbotConfigs {
     pub shotgun: AimbotConfig,
     pub machinegun: AimbotConfig,
     pub knife: AimbotConfig,
-    pub other: AimbotConfig
+    pub other: AimbotConfig,
 }
 
 impl Default for AimbotConfigs {
@@ -286,7 +286,7 @@ impl Default for AimbotConfigs {
             shotgun: AimbotConfig::default(),
             machinegun: AimbotConfig::default(),
             knife: AimbotConfig::default(),
-            other: AimbotConfig::default()
+            other: AimbotConfig::default(),
         };
     }
 }
@@ -300,7 +300,7 @@ pub struct Aimbot {
     pub default: bool,
     pub shared: bool,
     pub only_weapon: bool,
-    pub configs: AimbotConfigs
+    pub configs: AimbotConfigs,
 }
 
 impl Default for Aimbot {
@@ -313,7 +313,7 @@ impl Default for Aimbot {
             default: false,
             shared: false,
             only_weapon: true,
-            configs: AimbotConfigs::default()
+            configs: AimbotConfigs::default(),
         };
     }
 }
@@ -328,7 +328,7 @@ pub struct TriggerbotConfig {
     pub min_distance_enabled: bool,
     pub min_distance: u32,
     pub max_distance_enabled: bool,
-    pub max_distance: u32
+    pub max_distance: u32,
 }
 
 impl Default for TriggerbotConfig {
@@ -342,7 +342,7 @@ impl Default for TriggerbotConfig {
             min_distance_enabled: false,
             min_distance: 150,
             max_distance_enabled: false,
-            max_distance: 0
+            max_distance: 0,
         };
     }
 }
@@ -365,7 +365,7 @@ pub struct TriggerbotConfigs {
     pub shotgun: TriggerbotConfig,
     pub machinegun: TriggerbotConfig,
     pub knife: TriggerbotConfig,
-    pub other: TriggerbotConfig
+    pub other: TriggerbotConfig,
 }
 
 impl Default for TriggerbotConfigs {
@@ -379,7 +379,7 @@ impl Default for TriggerbotConfigs {
             shotgun: TriggerbotConfig::default(),
             machinegun: TriggerbotConfig::press(),
             knife: TriggerbotConfig::default(),
-            other: TriggerbotConfig::default()
+            other: TriggerbotConfig::default(),
         };
     }
 }
@@ -393,20 +393,20 @@ pub struct Triggerbot {
     pub default: bool,
     pub shared: bool,
     pub only_weapon: bool,
-    pub configs: TriggerbotConfigs
+    pub configs: TriggerbotConfigs,
 }
 
 impl Default for Triggerbot {
     fn default() -> Self {
         return Self {
-            enabled:  false,
+            enabled: false,
             key: 0,
             mode: 0,
             always: false,
             default: false,
             shared: false,
             only_weapon: true,
-            configs: TriggerbotConfigs::default()
+            configs: TriggerbotConfigs::default(),
         };
     }
 }
@@ -425,7 +425,7 @@ pub struct CrosshairConfig {
     pub lines_width: u32,
     pub lines_height: u32,
     pub lines_space: u32,
-    pub lines_thickness: u32
+    pub lines_thickness: u32,
 }
 
 impl Default for CrosshairConfig {
@@ -443,7 +443,7 @@ impl Default for CrosshairConfig {
             lines_width: 9,
             lines_height: 9,
             lines_space: 7,
-            lines_thickness: 1
+            lines_thickness: 1,
         };
     }
 }
@@ -458,7 +458,7 @@ pub struct CrosshairConfigs {
     pub shotgun: CrosshairConfig,
     pub machinegun: CrosshairConfig,
     pub knife: CrosshairConfig,
-    pub other: CrosshairConfig
+    pub other: CrosshairConfig,
 }
 
 impl Default for CrosshairConfigs {
@@ -472,7 +472,7 @@ impl Default for CrosshairConfigs {
             shotgun: CrosshairConfig::default(),
             machinegun: CrosshairConfig::default(),
             knife: CrosshairConfig::default(),
-            other: CrosshairConfig::default()
+            other: CrosshairConfig::default(),
         };
     }
 }
@@ -486,7 +486,7 @@ pub struct Crosshair {
     pub default: bool,
     pub shared: bool,
     pub only_weapon: bool,
-    pub configs: CrosshairConfigs
+    pub configs: CrosshairConfigs,
 }
 
 impl Default for Crosshair {
@@ -499,7 +499,7 @@ impl Default for Crosshair {
             default: true,
             shared: false,
             only_weapon: true,
-            configs: CrosshairConfigs::default()
+            configs: CrosshairConfigs::default(),
         };
     }
 }
@@ -523,7 +523,7 @@ pub struct Radar {
     pub crossline_color: (u32, u32, u32, u32),
     pub point_size: f32,
     pub proportion: u32,
-    pub range: u32
+    pub range: u32,
 }
 
 impl Default for Radar {
@@ -546,7 +546,7 @@ impl Default for Radar {
             crossline_color: (255, 255, 255, 255),
             point_size: 1.0,
             proportion: 37,
-            range: 143
+            range: 143,
         };
     }
 }
@@ -564,7 +564,7 @@ pub struct Misc {
     pub bomb_timer_color_disabled: (u32, u32, u32, u32),
     pub bomb_timer_color_enabled: (u32, u32, u32, u32),
     pub spectator_list_enabled: bool,
-    pub spectator_list_color: (u32, u32, u32, u32)
+    pub spectator_list_color: (u32, u32, u32, u32),
 }
 
 impl Default for Misc {
@@ -581,7 +581,7 @@ impl Default for Misc {
             bomb_timer_color_disabled: (0, 255, 255, 255),
             bomb_timer_color_enabled: (255, 0, 0, 255),
             spectator_list_enabled: false,
-            spectator_list_color: (0, 255, 255, 255)
+            spectator_list_color: (0, 255, 255, 255),
         };
     }
 }
@@ -615,7 +615,7 @@ pub struct StyleColors {
     pub tab: (u32, u32, u32, u32),
     pub tab_hovered: (u32, u32, u32, u32),
     pub tab_active: (u32, u32, u32, u32),
-    pub separator: (u32, u32, u32, u32)
+    pub separator: (u32, u32, u32, u32),
 }
 
 impl Default for StyleColors {
@@ -648,7 +648,7 @@ impl Default for StyleColors {
             tab: (51, 128, 245, 255),
             tab_hovered: (51, 128, 245, 175),
             tab_active: (51, 128, 245, 150),
-            separator: (175, 175, 175, 125)
+            separator: (175, 175, 175, 125),
         };
     }
 }
@@ -674,7 +674,7 @@ pub struct Style {
     pub item_inner_spacing: [f32; 2],
     pub indent_spacing: f32,
     pub grab_rounding: f32,
-    pub colors: StyleColors
+    pub colors: StyleColors,
 }
 
 impl Default for Style {
@@ -699,7 +699,7 @@ impl Default for Style {
             item_inner_spacing: [5.0, 5.0],
             indent_spacing: 2.5,
             grab_rounding: 0.0,
-            colors: StyleColors::default()
+            colors: StyleColors::default(),
         };
     }
 }
@@ -710,7 +710,7 @@ pub struct Settings {
     pub bypass_capture: bool,
     pub exclude_team: bool,
     pub show_on_spectate: bool,
-    pub toggle_bg_alpha: f32
+    pub toggle_bg_alpha: f32,
 }
 
 impl Default for Settings {
@@ -720,7 +720,7 @@ impl Default for Settings {
             bypass_capture: true,
             exclude_team: true,
             show_on_spectate: true,
-            toggle_bg_alpha: 0.2
+            toggle_bg_alpha: 0.2,
         };
     }
 }
@@ -732,7 +732,7 @@ pub struct WindowPositions {
     pub cheat_list: [f32; 2],
     pub bomb_timer: [f32; 2],
     pub spectator_list: [f32; 2],
-    pub radar: [f32; 2]
+    pub radar: [f32; 2],
 }
 
 impl Default for WindowPositions {
@@ -743,7 +743,7 @@ impl Default for WindowPositions {
             cheat_list: [315.0, 70.0],
             bomb_timer: [5.0, 330.0],
             spectator_list: [5.0, 415.0],
-            radar: [5.0, 5.0]
+            radar: [5.0, 5.0],
         };
     }
 }
@@ -759,7 +759,7 @@ pub struct Config {
     pub misc: Misc,
     pub style: Style,
     pub settings: Settings,
-    pub window_positions: WindowPositions
+    pub window_positions: WindowPositions,
 }
 
 impl Default for Config {
@@ -774,21 +774,30 @@ impl Default for Config {
             misc: Misc::default(),
             style: Style::default(),
             settings: Settings::default(),
-            window_positions: WindowPositions::default()
+            window_positions: WindowPositions::default(),
         };
     }
 }
 
 impl Config {
     pub fn save_config(&self, file_path: &str, update: bool) -> Result<(), &str> {
-        let file = match OpenOptions::new().write(true).truncate(true).create(true).open(file_path) {
+        let file = match OpenOptions::new()
+            .write(true)
+            .truncate(true)
+            .create(true)
+            .open(file_path)
+        {
             Ok(file) => file,
-            Err(_) => { return Err("CreateFile"); }
+            Err(_) => {
+                return Err("CreateFile");
+            }
         };
 
         match serde_json::to_writer_pretty(file, &self) {
-            Ok(_) => {},
-            Err(_) => { return Err("WriteFile"); }
+            Ok(_) => {}
+            Err(_) => {
+                return Err("WriteFile");
+            }
         };
 
         if update {
@@ -803,7 +812,8 @@ lazy_static! {
     pub static ref CONFIG_EXTENSION: String = "conf.json".to_string();
     pub static ref DEFAULT_CONFIG: String = format!("Default.{}", CONFIG_EXTENSION.clone());
     pub static ref CONFIG_DIR: Arc<Mutex<String>> = Arc::new(Mutex::new("".to_string()));
-    pub static ref CONFIGS: Arc<Mutex<IndexMap<String, Option<Config>>>> = Arc::new(Mutex::new(IndexMap::new()));
+    pub static ref CONFIGS: Arc<Mutex<IndexMap<String, Option<Config>>>> =
+        Arc::new(Mutex::new(IndexMap::new()));
     pub static ref CONFIG: Arc<Mutex<Config>> = Arc::new(Mutex::new(Config::default()));
 }
 
@@ -827,15 +837,19 @@ pub fn update_configs() -> Option<String> {
 
     if !metadata(&directory_pathbuf).is_ok() {
         match create_dir_all(&directory_pathbuf) {
-            Ok(_) => {},
-            Err(_) => { return Some("CreateDirectory".to_string()); }
+            Ok(_) => {}
+            Err(_) => {
+                return Some("CreateDirectory".to_string());
+            }
         };
     };
-    
+
     let mut configs = IndexMap::new();
     let paths = match read_dir(directory_pathbuf.clone()) {
         Ok(paths) => paths,
-        Err(_) => { return Some("DirectoryPath".to_string()); }
+        Err(_) => {
+            return Some("DirectoryPath".to_string());
+        }
     };
 
     let default_config_name = &*DEFAULT_CONFIG;
@@ -848,12 +862,13 @@ pub fn update_configs() -> Option<String> {
                     if let Some(config_path) = directory_pathbuf.join(file_name).to_str() {
                         match load_config(config_path) {
                             Ok(config) => {
-                                let (config_index, _) = configs.insert_full(file_name.to_string(), Some(config));
-                                
+                                let (config_index, _) =
+                                    configs.insert_full(file_name.to_string(), Some(config));
+
                                 if file_name == &*DEFAULT_CONFIG {
                                     configs.move_index(config_index, 0);
                                 }
-                            },
+                            }
                             Err(_) => {
                                 configs.insert_full(file_name.to_string(), None);
                             }
@@ -874,8 +889,15 @@ pub fn update_configs() -> Option<String> {
 
     if update_default_config {
         if let Some(default_config_path) = directory_pathbuf.join(default_config_name).to_str() {
-            match CONFIG.lock().unwrap().clone().save_config(default_config_path, false) {
-                Err(_) => { return Some("SaveDefaultConfig".to_string()); },
+            match CONFIG
+                .lock()
+                .unwrap()
+                .clone()
+                .save_config(default_config_path, false)
+            {
+                Err(_) => {
+                    return Some("SaveDefaultConfig".to_string());
+                }
                 Ok(_) => {}
             };
         }
@@ -888,13 +910,17 @@ pub fn update_configs() -> Option<String> {
 pub fn setup_config() -> Option<String> {
     let directory_path = match get_directory_dir(ProgramConfig::Package::Name) {
         Some(path) => path,
-        None => { return Some("FindDirectory".to_string()); }
+        None => {
+            return Some("FindDirectory".to_string());
+        }
     };
 
     *CONFIG_DIR.lock().unwrap() = directory_path.to_string();
 
     match update_configs() {
-        Some(str) => { return Some(str); },
+        Some(str) => {
+            return Some(str);
+        }
         None => {}
     };
 
@@ -923,36 +949,48 @@ pub fn merge_config(a: &mut Value, b: &Value) {
 pub fn load_config(file_path: &str) -> Result<Config, &str> {
     let file = match File::open(file_path) {
         Ok(path) => path,
-        Err(_) => { return Err("FilePath"); }
+        Err(_) => {
+            return Err("FilePath");
+        }
     };
-    
+
     let config: Config = match serde_json::from_reader(file) {
         Ok(config) => config,
         Err(_) => {
             let file = match File::open(file_path) {
                 Ok(path) => path,
-                Err(_) => { return Err("FilePath"); }
+                Err(_) => {
+                    return Err("FilePath");
+                }
             };
-            
+
             let old_config: Value = match serde_json::from_reader(file) {
                 Ok(value) => value,
-                Err(_) => { return Err("ParseFile"); }
+                Err(_) => {
+                    return Err("ParseFile");
+                }
             };
 
             let mut config = match serde_json::to_value(Config::default()) {
                 Ok(value) => value,
-                Err(_) => { return Err("ParseValue"); }
+                Err(_) => {
+                    return Err("ParseValue");
+                }
             };
 
             merge_config(&mut config, &old_config);
 
             let new_config: Config = match serde_json::from_value(config) {
                 Ok(config) => config,
-                Err(_) => { return Err("ParseConfig"); }
+                Err(_) => {
+                    return Err("ParseConfig");
+                }
             };
 
             match new_config.save_config(file_path, false) {
-                Err(_) => { return Err("SaveConfig"); },
+                Err(_) => {
+                    return Err("SaveConfig");
+                }
                 Ok(_) => {}
             };
 

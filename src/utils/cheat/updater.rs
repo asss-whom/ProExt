@@ -1,18 +1,18 @@
+use toml::{de::from_str, Value};
 use ureq::get;
-use toml::{Value, de::from_str};
 
-use semver::Version;
 use crate::config::ProgramConfig;
+use semver::Version;
 
 fn get_latest_version() -> Option<String> {
     let mut response = match get(ProgramConfig::Update::CargoTomlURL).call() {
         Ok(response) => response,
-        Err(_) => return None
+        Err(_) => return None,
     };
 
     let response_string = match response.body_mut().read_to_string() {
         Ok(text) => text,
-        Err(_) => return None
+        Err(_) => return None,
     };
 
     let parsed_toml: Value = match from_str::<Value>(&response_string) {
@@ -29,7 +29,7 @@ fn get_latest_version() -> Option<String> {
 fn update_exists() -> bool {
     match get(ProgramConfig::Update::URL).call() {
         Ok(response) => response.status() == 200,
-        Err(_) => false
+        Err(_) => false,
     }
 }
 
@@ -46,6 +46,6 @@ pub fn update_available() -> Option<String> {
 
     return match latest > current {
         true => Some(latest_version),
-        false => None
+        false => None,
     };
 }
