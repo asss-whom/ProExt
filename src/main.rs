@@ -25,8 +25,9 @@ use crate::cheat::classes::game::init_game_address;
 use crate::ui::main::init_gui;
 
 fn main() {
-    let Ok(exe_pathbuf) = env::current_exe() else {
-        return;
+    let exe_pathbuf = match env::current_exe() {
+        Ok(exe) => exe,
+        Err(_) => return
     };
 
     if get_process_amount(ProgramConfig::Package::Executable) > 1

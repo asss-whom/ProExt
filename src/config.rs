@@ -143,8 +143,8 @@ pub mod ProgramConfig {
             "F12",
         ];
 
-        pub const ToggleKey: VirtualKeyCode = VirtualKeyCode::Insert;
-        pub const ToggleKeyMKI: Keyboard = Keyboard::Insert;
+        pub const ToggleKey: VirtualKeyCode = VirtualKeyCode::Home;
+        pub const ToggleKeyMKI: Keyboard = Keyboard::Home;
 
         pub const ExitKey: VirtualKeyCode = VirtualKeyCode::End;
         pub const ExitKeyMKI: Keyboard = Keyboard::Other(0x23);

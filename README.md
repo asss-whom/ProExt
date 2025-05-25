@@ -58,7 +58,7 @@ This method is the easiest and is recommended for most. You can find the latest 
 
 ## ⌨️ Shortcuts:
 
-- `Insert / Ins` - Show/hide the menu.
+- `Home` - Show/hide the menu.
 - `End` - Exits the application.
 
 ## 📋 Features:
