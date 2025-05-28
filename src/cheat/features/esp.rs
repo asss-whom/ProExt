@@ -26,7 +26,7 @@ pub fn get_esp_toggled(config: Config) -> bool {
     let mut toggled = FEATURE_TOGGLED.lock().unwrap();
     let mut changed = TOGGLE_CHANGED.lock().unwrap();
 
-    return is_feature_toggled(feature.key, feature.mode, &mut toggled, &mut changed);
+    is_feature_toggled(feature.key, feature.mode, &mut toggled, &mut changed)
 }
 
 pub fn render_bones(ui: &mut Ui, bone_pos_list: [BoneJointPos; 30], config: Config) {
@@ -171,10 +171,10 @@ pub fn render_eye_ray(
 
 fn calculate_size(initial: Vector2<f32>, distance: f32, max_distance: f32) -> Vector2<f32> {
     let scale = 1.0 - (distance / max_distance);
-    return Vector2 {
+    Vector2 {
         x: initial.x * scale,
         y: initial.y * scale,
-    };
+    }
 }
 
 pub fn get_2d_box_non_player(
@@ -187,12 +187,12 @@ pub fn get_2d_box_non_player(
         x: screen_pos.x - size.x / 2.0,
         y: screen_pos.y - size.y / 2.0,
     };
-    return Vector4 {
+    Vector4 {
         x: pos.x,
         y: pos.y,
         z: size.x,
         w: size.y,
-    };
+    }
 }
 
 pub fn get_2d_box(bone_pos_list: [BoneJointPos; 30], screen_pos: Vector2<f32>) -> Vector4<f32> {
@@ -206,12 +206,12 @@ pub fn get_2d_box(bone_pos_list: [BoneJointPos; 30], screen_pos: Vector2<f32>) -
         y: head.screen_pos.y - size.y * 0.08,
     };
 
-    return Vector4 {
+    Vector4 {
         x: pos.x,
         y: pos.y,
         z: size.x,
         w: size.y,
-    };
+    }
 }
 
 pub fn get_2d_bone_rect(bone_pos_list: [BoneJointPos; 30]) -> Vector4<f32> {
@@ -230,12 +230,12 @@ pub fn get_2d_bone_rect(bone_pos_list: [BoneJointPos; 30]) -> Vector4<f32> {
         max.y = joint.screen_pos.y.max(max.y);
     }
 
-    return Vector4 {
+    Vector4 {
         x: min.x,
         y: min.y,
         z: (max.x - min.x),
         w: (max.y - min.y),
-    };
+    }
 }
 
 pub fn render_snap_line(
@@ -370,12 +370,10 @@ pub fn render_box(
 
     let box_color = if is_friendly && config.esp.box_friendly_enabled {
         config.esp.box_friendly_color
+    } else if config.esp.box_target_enabled && enemy_visible {
+        config.esp.box_target_color
     } else {
-        if config.esp.box_target_enabled && enemy_visible {
-            config.esp.box_target_color
-        } else {
-            config.esp.box_color
-        }
+        config.esp.box_color
     };
     rectangle(
         ui,
@@ -396,21 +394,17 @@ pub fn render_box(
     if config.esp.filled_box_enabled {
         let filled_box_color_one = if is_friendly && config.esp.box_friendly_enabled {
             color_with_alpha(config.esp.box_friendly_color, config.esp.filled_box_alpha)
+        } else if config.esp.box_target_enabled && enemy_visible {
+            color_with_alpha(config.esp.box_target_color, config.esp.filled_box_alpha)
         } else {
-            if config.esp.box_target_enabled && enemy_visible {
-                color_with_alpha(config.esp.box_target_color, config.esp.filled_box_alpha)
-            } else {
-                color_with_alpha(config.esp.filled_box_color_one, config.esp.filled_box_alpha)
-            }
+            color_with_alpha(config.esp.filled_box_color_one, config.esp.filled_box_alpha)
         };
         let filled_box_color_two = if is_friendly && config.esp.box_friendly_enabled {
             color_with_alpha(config.esp.box_friendly_color, config.esp.filled_box_alpha)
+        } else if config.esp.box_target_enabled && enemy_visible {
+            color_with_alpha(config.esp.box_target_color, config.esp.filled_box_alpha)
         } else {
-            if config.esp.box_target_enabled && enemy_visible {
-                color_with_alpha(config.esp.box_target_color, config.esp.filled_box_alpha)
-            } else {
-                color_with_alpha(config.esp.filled_box_color_two, config.esp.filled_box_alpha)
-            }
+            color_with_alpha(config.esp.filled_box_color_two, config.esp.filled_box_alpha)
         };
 
         rectangle_gradient(
@@ -435,10 +429,8 @@ pub fn render_box(
 pub fn render_weapon_name(ui: &mut Ui, weapon_name: &str, rect: Vector4<f32>, config: Config) {
     let mut y_offset: f32 = 0.0;
 
-    if config.esp.bar_mode == 1 {
-        if config.esp.ammo_bar_enabled {
-            y_offset += 6.0;
-        }
+    if config.esp.bar_mode == 1 && config.esp.ammo_bar_enabled {
+        y_offset += 6.0;
     }
 
     if config.esp.outline {
@@ -469,10 +461,8 @@ pub fn render_weapon_name(ui: &mut Ui, weapon_name: &str, rect: Vector4<f32>, co
 pub fn render_distance(ui: &mut Ui, distance: u32, rect: Vector4<f32>, config: Config) {
     let mut x_offset: f32 = 0.0;
 
-    if config.esp.bar_mode == 0 {
-        if config.esp.ammo_bar_enabled {
-            x_offset += 6.0;
-        }
+    if config.esp.bar_mode == 0 && config.esp.ammo_bar_enabled {
+        x_offset += 6.0;
     }
 
     if config.esp.outline {
@@ -565,7 +555,7 @@ pub fn render_name(ui: &mut Ui, name: &str, rect: Vector4<f32>, config: Config) 
 }
 
 pub fn render_health_bar(ui: &mut Ui, current_health: f32, rect: Vector4<f32>, config: Config) {
-    let height_horizontal = 10.0 - (rect.z / 100.0).max(6.0).min(8.0);
+    let height_horizontal = 10.0 - (rect.z / 100.0).clamp(6.0, 8.0);
     let (rect_pos, rect_size) = {
         if config.esp.bar_mode == 0 {
             // Vertical
@@ -680,7 +670,7 @@ pub fn render_health_bar(ui: &mut Ui, current_health: f32, rect: Vector4<f32>, c
 }
 
 pub fn render_armor_bar(ui: &mut Ui, armor: f32, rect: Vector4<f32>, config: Config) {
-    let height_horizontal = 10.0 - (rect.z / 100.0).max(6.0).min(8.0);
+    let height_horizontal = 10.0 - (rect.z / 100.0).clamp(6.0, 8.0);
     let mut multiply_factor = 1.1;
 
     if config.esp.health_bar_enabled {
@@ -782,7 +772,7 @@ pub fn render_armor_bar(ui: &mut Ui, armor: f32, rect: Vector4<f32>, config: Con
 }
 
 pub fn render_ammo_bar(ui: &mut Ui, ammo: f32, max_ammo: f32, rect: Vector4<f32>, config: Config) {
-    let height_horizontal = 10.0 - (rect.z / 100.0).max(6.0).min(8.0);
+    let height_horizontal = 10.0 - (rect.z / 100.0).clamp(6.0, 8.0);
     let (rect_pos, rect_size) = {
         if config.esp.bar_mode == 0 {
             // Vertical
@@ -909,7 +899,7 @@ pub fn render_headshot_line(
         y: window_height as f32 / 2.0
             - window_height as f32
                 / (2.0 * (fov as f32 * PI / 180.0).sin() / (90.0 * PI / 180.0).sin())
-                * (view_angle_x as f32 * PI / 180.0).sin()
+                * (view_angle_x * PI / 180.0).sin()
                 / (90.0 * PI / 180.0).sin(),
     };
 

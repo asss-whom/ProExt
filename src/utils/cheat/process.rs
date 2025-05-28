@@ -42,7 +42,7 @@ pub fn attach_process() -> Option<String> {
             return Some("ProcessId".to_string());
         }
         process_id => {
-            (*process).process_id = process_id;
+            process.process_id = process_id;
         }
     };
 
@@ -50,11 +50,11 @@ pub fn attach_process() -> Option<String> {
         OpenProcess(
             PROCESS_ALL_ACCESS | PROCESS_CREATE_THREAD,
             true,
-            (*process).process_id,
+            process.process_id,
         )
     } {
         Ok(handle) => {
-            (*process).h_process = handle;
+            process.h_process = handle;
         }
         Err(_) => {
             return Some("HProcess".to_string());
@@ -71,18 +71,18 @@ pub fn attach_process() -> Option<String> {
             return Some("Module".to_string());
         }
         module_address => {
-            (*process).module_address = module_address;
+            process.module_address = module_address;
         }
     };
 
-    (*process).attached = true;
-    return None;
+    process.attached = true;
+    None
 }
 
 pub fn detach_process(process: &mut Process) {
     if !HANDLE::is_invalid(&process.h_process) {
         unsafe {
-            CloseHandle((*process).h_process).ok();
+            CloseHandle(process.h_process).ok();
         }
     }
 
@@ -97,25 +97,19 @@ pub fn rpm<ReadType: ?Sized>(address: u64, value: &mut ReadType, size: usize) ->
     let process = process.lock().unwrap();
 
     unsafe {
-        match ReadProcessMemory(
-            (*process).h_process,
+        ReadProcessMemory(
+            process.h_process,
             address as *mut c_void,
             value as *mut ReadType as *mut c_void,
             size,
             None,
-        ) {
-            Ok(_) => {
-                return true;
-            }
-            Err(_) => {
-                return false;
-            }
-        }
+        )
+        .is_ok()
     }
 }
 
 pub fn rpm_auto<ReadType>(address: u64, value: &mut ReadType) -> bool {
-    return rpm(address, value, mem::size_of::<ReadType>());
+    rpm(address, value, mem::size_of::<ReadType>())
 }
 
 pub fn rpm_offset<ReadType>(address: u64, offset: u64, value: &mut ReadType) -> bool {
@@ -124,7 +118,7 @@ pub fn rpm_offset<ReadType>(address: u64, offset: u64, value: &mut ReadType) -> 
         None => return false,
     };
 
-    return address != 0 && rpm_auto(sum, value);
+    address != 0 && rpm_auto(sum, value)
 }
 
 pub fn trace_address(base_address: u64, offsets: &[u32]) -> u64 {
@@ -138,17 +132,17 @@ pub fn trace_address(base_address: u64, offsets: &[u32]) -> u64 {
         return 0;
     }
 
-    for i in 0..offsets.len() - 1 {
-        if !rpm_offset(address, offsets[i] as u64, &mut address) {
+    for offset in offsets.iter().take(offsets.len() - 1) {
+        if !rpm_offset(address, *offset as u64, &mut address) {
             return 0;
         }
     }
 
-    return if address == 0 {
+    if address == 0 {
         0
     } else {
         address + offsets[offsets.len() - 1] as u64
-    };
+    }
 }
 
 pub fn get_process_id(process_name: &str) -> u32 {
@@ -177,7 +171,7 @@ pub fn get_process_id(process_name: &str) -> u32 {
         }
 
         CloseHandle(h_snapshot).ok();
-        return 0;
+        0
     }
 }
 
@@ -207,7 +201,7 @@ pub fn get_process_amount(process_name: &str) -> u32 {
         }
 
         CloseHandle(h_snapshot).ok();
-        return amount;
+        amount
     }
 }
 
@@ -217,7 +211,7 @@ pub fn get_process_module_handle(module_name: &str) -> u64 {
 
     let mut module_info: MODULEENTRY32W = MODULEENTRY32W::default();
     let h_snapshot =
-        match unsafe { CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, (*process).process_id) } {
+        match unsafe { CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, process.process_id) } {
             Ok(snapshot) => snapshot,
             Err(_) => {
                 return 0;
@@ -240,7 +234,7 @@ pub fn get_process_module_handle(module_name: &str) -> u64 {
         }
 
         CloseHandle(h_snapshot).ok();
-        return 0;
+        0
     }
 }
 

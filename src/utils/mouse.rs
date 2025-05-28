@@ -18,7 +18,7 @@ pub fn create_mouse_input(
     data: u32,
     extra_info: usize,
 ) -> INPUT {
-    return INPUT {
+    INPUT {
         r#type: INPUT_MOUSE,
         Anonymous: windows::Win32::UI::Input::KeyboardAndMouse::INPUT_0 {
             mi: MOUSEINPUT {
@@ -30,7 +30,7 @@ pub fn create_mouse_input(
                 time: 0,
             },
         },
-    };
+    }
 }
 
 pub fn send_input(input: INPUT) {
@@ -72,10 +72,10 @@ pub fn get_mouse_position() -> Option<(i32, i32)> {
     unsafe {
         let mut position = std::mem::zeroed();
 
-        if !GetCursorPos(&mut position).is_ok() {
+        if GetCursorPos(&mut position).is_err() {
             return None;
         }
 
-        return Some((position.x, position.y));
+        Some((position.x, position.y))
     }
 }

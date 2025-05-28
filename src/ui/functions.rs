@@ -14,7 +14,7 @@ use crate::cheat::features::watermark::WATERMARK_RESET_POSITION;
 
 pub fn hotkey_index_to_io(hotkey_index: usize) -> Result<Mouse, Keyboard> {
     if hotkey_index == 1 {
-        return Ok(Mouse::Left);
+        Ok(Mouse::Left)
     } else if hotkey_index == 2 {
         return Ok(Mouse::Middle);
     } else if hotkey_index == 3 {
@@ -75,61 +75,59 @@ pub fn color_edit_u32_tuple(ui: &Ui, label: &str, color_tuple: &mut (u32, u32, u
 }
 
 pub fn color_u32_to_f32(color: (u32, u32, u32, u32)) -> (f32, f32, f32, f32) {
-    return (
+    (
         color.0 as f32 / 255.0,
         color.1 as f32 / 255.0,
         color.2 as f32 / 255.0,
         color.3 as f32 / 255.0,
-    );
+    )
 }
 
 pub fn color_with_alpha(
     (red, green, blue, _): (u32, u32, u32, u32),
     alpha: f32,
 ) -> (f32, f32, f32, f32) {
-    return (
+    (
         red as f32 / 255.0,
         green as f32 / 255.0,
         blue as f32 / 255.0,
         alpha,
-    );
+    )
 }
 
 pub fn color_with_masked_alpha(
     (red, green, blue, _): (u32, u32, u32, u32),
     alpha: u32,
 ) -> (f32, f32, f32) {
-    return (
+    (
         red.bitand(alpha) as f32 / 255.0,
         green.bitand(alpha) as f32 / 255.0,
         blue.bitand(alpha) as f32 / 255.0,
-    );
+    )
 }
 
 pub fn mix_colors(color_1: ImColor32, color_2: ImColor32, t: f32) -> ImColor32 {
-    return ImColor32::from_rgba_f32s(
+    ImColor32::from_rgba_f32s(
         t * color_1.r as f32 / 255.0 + (1.0 - t) * color_2.r as f32 / 255.0,
         t * color_1.g as f32 / 255.0 + (1.0 - t) * color_2.g as f32 / 255.0,
         t * color_1.b as f32 / 255.0 + (1.0 - t) * color_2.b as f32 / 255.0,
         color_1.a as f32 / 255.0,
-    );
+    )
 }
 
 pub fn distance_between_vec2(pos1: Vector2<f32>, pos2: Vector2<f32>) -> f32 {
     let x_diff = pos2.x - pos1.x;
     let y_diff = pos2.y - pos1.y;
-    let distance = (x_diff.powi(2) + y_diff.powi(2)).sqrt();
 
-    return distance;
+    (x_diff.powi(2) + y_diff.powi(2)).sqrt()
 }
 
 pub fn distance_between_vec3(pos1: Vector3<f32>, pos2: Vector3<f32>) -> f32 {
     let x_diff = pos2.x - pos1.x;
     let y_diff = pos2.y - pos1.y;
     let z_diff = pos2.z - pos1.z;
-    let distance = (x_diff.powi(2) + y_diff.powi(2) + z_diff.powi(2)).sqrt();
 
-    return distance;
+    (x_diff.powi(2) + y_diff.powi(2) + z_diff.powi(2)).sqrt()
 }
 
 pub fn rectangle(
@@ -166,7 +164,7 @@ pub fn rectangle_gradient(
     rounding: u32,
     filled: bool,
 ) {
-    if rounding <= 0 && top_color != bottom_color {
+    if rounding == 0 && top_color != bottom_color {
         ui.get_background_draw_list().add_rect_filled_multicolor(
             pos,
             Vector2 {
@@ -260,16 +258,16 @@ pub fn stroke_text(
 }
 
 pub fn color_to_style_color(color: (u32, u32, u32, u32)) -> [f32; 4] {
-    return [
+    [
         color.0 as f32 / 255.0,
         color.1 as f32 / 255.0,
         color.2 as f32 / 255.0,
         color.3 as f32 / 255.0,
-    ];
+    ]
 }
 
 pub fn apply_style(style: &mut Style, default: Style) {
-    let config = CONFIG.clone().lock().unwrap().clone();
+    let config = *CONFIG.clone().lock().unwrap();
 
     if !config.style.enabled {
         *style = default;

@@ -30,16 +30,16 @@ pub fn get_aimbot_toggled(config: Config) -> bool {
     let mut toggled = FEATURE_TOGGLED.lock().unwrap();
     let mut changed = TOGGLE_CHANGED.lock().unwrap();
 
-    return is_feature_toggled(
+    is_feature_toggled(
         config.aimbot.key,
         config.aimbot.mode,
         &mut toggled,
         &mut changed,
-    );
+    )
 }
 
 pub fn get_aimbot_config(configs: AimbotConfigs, weapon_type: WeaponType) -> AimbotConfig {
-    return match weapon_type {
+    match weapon_type {
         WeaponType::Pistol => configs.pistol,
         WeaponType::Rifle => configs.rifle,
         WeaponType::Submachine => configs.submachine,
@@ -48,7 +48,7 @@ pub fn get_aimbot_config(configs: AimbotConfigs, weapon_type: WeaponType) -> Aim
         WeaponType::MachineGun => configs.machinegun,
         WeaponType::Knife => configs.knife,
         _ => configs.other,
-    };
+    }
 }
 
 pub fn get_aimbot_yaw_pitch(
@@ -64,15 +64,15 @@ pub fn get_aimbot_yaw_pitch(
     };
     let distance = (pos.x.powf(2.0) + pos.y.powf(2.0)).sqrt();
 
-    let yaw = pos.y.atan2(pos.x) * 57.295779513 - view_angle.y;
-    let pitch = -(pos.z / distance).atan() * 57.295779513 - view_angle.x;
+    let yaw = pos.y.atan2(pos.x) * 57.295_78 - view_angle.y;
+    let pitch = -(pos.z / distance).atan() * 57.295_78 - view_angle.x;
     let norm = (yaw.powf(2.0) + pitch.powf(2.0)).sqrt() * 0.75;
 
     if norm > config.fov as f32 {
         return None;
     }
 
-    return Some(norm);
+    Some(norm)
 }
 
 pub fn run_aimbot(
@@ -105,7 +105,7 @@ pub fn run_aimbot(
                 / 1000.0
         };
         let delay = Duration::from_secs_f32(
-            (config.delay as f32 + delay_offset).min(500.0).max(0.0) / 1000.0,
+            (config.delay as f32 + delay_offset).clamp(0.0, 500.0) / 1000.0,
         );
 
         if locked_on.elapsed() < delay {
@@ -119,7 +119,7 @@ pub fn run_aimbot(
     } else {
         (rng.random_range(-config.smooth_offset..config.smooth_offset) * 1000.0).trunc() / 1000.0
     };
-    let smooth = (config.smooth + smooth_offset).min(5.0).max(0.0) + base_smooth;
+    let smooth = (config.smooth + smooth_offset).clamp(0.0, 5.0) + base_smooth;
 
     let (screen_center_x, screen_center_y) =
         ((window_info.1 .0 / 2) as f32, (window_info.1 .1 / 2) as f32);
@@ -145,12 +145,10 @@ pub fn run_aimbot(
         } else {
             target_x
         }
+    } else if target_x + screen_center_x < 0.0 {
+        0.0
     } else {
-        if target_x + screen_center_x < 0.0 {
-            0.0
-        } else {
-            target_x
-        }
+        target_x
     };
 
     let mut target_y = if screen_pos.y > screen_center_y {
@@ -165,12 +163,10 @@ pub fn run_aimbot(
         } else {
             target_y
         }
+    } else if target_y + screen_center_y < 0.0 {
+        0.0
     } else {
-        if target_y + screen_center_y < 0.0 {
-            0.0
-        } else {
-            target_y
-        }
+        target_y
     };
 
     if smooth != base_smooth {
@@ -224,7 +220,7 @@ pub fn get_aimbot_bone_indexes(config: AimbotConfig) -> Vec<usize> {
         bone_indexes.push(BoneIndex::Pelvis as usize);
     }
 
-    return bone_indexes;
+    bone_indexes
 }
 
 pub fn aimbot_check(
@@ -268,7 +264,7 @@ pub fn aimbot_check(
             *entity_address = Some(address);
             *aim_pos = Some(bone_pos_list[bone_index].pos);
 
-            if bone_index as usize == BoneIndex::Head as usize {
+            if bone_index == BoneIndex::Head as usize {
                 if let Some(aim_pos) = aim_pos {
                     aim_pos.z -= -1.0;
                 }

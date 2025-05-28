@@ -25,14 +25,14 @@ pub fn get_triggerbot_toggled(config: Config) -> bool {
     let mut toggled = FEATURE_TOGGLED.lock().unwrap();
     let mut changed = TOGGLE_CHANGED.lock().unwrap();
 
-    return is_feature_toggled(feature.key, feature.mode, &mut toggled, &mut changed);
+    is_feature_toggled(feature.key, feature.mode, &mut toggled, &mut changed)
 }
 
 pub fn get_triggerbot_config(
     configs: TriggerbotConfigs,
     weapon_type: WeaponType,
 ) -> TriggerbotConfig {
-    return match weapon_type {
+    match weapon_type {
         WeaponType::Pistol => configs.pistol,
         WeaponType::Rifle => configs.rifle,
         WeaponType::Submachine => configs.submachine,
@@ -41,7 +41,7 @@ pub fn get_triggerbot_config(
         WeaponType::MachineGun => configs.machinegun,
         WeaponType::Knife => configs.knife,
         _ => configs.other,
-    };
+    }
 }
 
 pub fn run_triggerbot(
@@ -51,7 +51,7 @@ pub fn run_triggerbot(
     local_position: Vector3<f32>,
     rng: &mut ThreadRng,
 ) {
-    let mouse_locked = MOUSE_LOCKED.lock().unwrap().clone();
+    let mouse_locked = *MOUSE_LOCKED.lock().unwrap();
     let mut shot_entity = TB_SHOT_ENTITY.lock().unwrap();
     let mut locked_entity = TB_LOCKED_ENTITY.lock().unwrap();
 
@@ -83,7 +83,7 @@ pub fn run_triggerbot(
                 / 1000.0
         };
         let delay = Duration::from_secs_f32(
-            (config.delay as f32 + delay_offset).min(500.0).max(0.0) / 1000.0,
+            (config.delay as f32 + delay_offset).clamp(0.0, 500.0) / 1000.0,
         );
 
         if locked_on.elapsed() < delay {
@@ -100,10 +100,7 @@ pub fn run_triggerbot(
             / 1000.0
     };
     let interval = Duration::from_secs_f32(
-        (config.tap_interval as f32 + interval_offset)
-            .min(500.0)
-            .max(50.0)
-            / 1000.0,
+        (config.tap_interval as f32 + interval_offset).clamp(0.0, 500.0) / 1000.0,
     );
 
     if config.action == 0 && shot_entity.elapsed() >= interval {

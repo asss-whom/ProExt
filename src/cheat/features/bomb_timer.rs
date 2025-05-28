@@ -48,7 +48,7 @@ pub fn render_bomb_timer(
 
     let remaining_time: Option<u64> = {
         if let Some(plant_time) = *plant_time {
-            let elapsed_time = plant_time.elapsed().as_secs() as u64;
+            let elapsed_time = plant_time.elapsed().as_secs();
 
             if elapsed_time < 40 {
                 Some(40 - elapsed_time)
@@ -65,7 +65,7 @@ pub fn render_bomb_timer(
         .always_auto_resize(true)
         .position(window_position, condition)
         .build(|| {
-            (*CONFIG.lock().unwrap()).window_positions.bomb_timer = ui.window_pos();
+            CONFIG.lock().unwrap().window_positions.bomb_timer = ui.window_pos();
 
             let disabled = color_u32_to_f32(config.misc.bomb_timer_color_disabled);
             let enabled = color_u32_to_f32(config.misc.bomb_timer_color_enabled);

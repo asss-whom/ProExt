@@ -30,7 +30,7 @@ pub fn is_spectating(
         return false;
     }
 
-    if let Some(sum) = (120 as u64).checked_mul(pawn.bitand(0x1FF) as u64) {
+    if let Some(sum) = 120_u64.checked_mul(pawn.bitand(0x1FF) as u64) {
         if !rpm_offset(game_entity_list_entry, sum, &mut cs_player_pawn) {
             return false;
         }
@@ -61,7 +61,7 @@ pub fn is_spectating(
         return false;
     }
 
-    if let Some(sum) = (120 as u64).checked_mul(observer_target.bitand(0x1FF) as u64) {
+    if let Some(sum) = 120_u64.checked_mul(observer_target.bitand(0x1FF) as u64) {
         if !rpm_offset(game_entity_list_entry, sum, &mut controller) {
             return false;
         }
@@ -73,7 +73,7 @@ pub fn is_spectating(
         return true;
     }
 
-    return false;
+    false
 }
 
 pub fn render_spectator_list(ui: &mut Ui, spectators: Vec<String>, config: Config, no_pawn: bool) {
@@ -95,7 +95,7 @@ pub fn render_spectator_list(ui: &mut Ui, spectators: Vec<String>, config: Confi
         .always_auto_resize(true)
         .position(window_position, condition)
         .build(|| {
-            (*CONFIG.lock().unwrap()).window_positions.spectator_list = ui.window_pos();
+            CONFIG.lock().unwrap().window_positions.spectator_list = ui.window_pos();
 
             let spectator_list_color_f32 = color_u32_to_f32(config.misc.spectator_list_color);
             let spectator_list_color = Vector4 {
@@ -107,7 +107,7 @@ pub fn render_spectator_list(ui: &mut Ui, spectators: Vec<String>, config: Confi
 
             if no_pawn {
                 ui.text_colored(spectator_list_color, "Couldn't fetch information.");
-            } else if spectators.len() == 0 {
+            } else if spectators.is_empty() {
                 ui.text_colored(spectator_list_color, "No spectators.");
             } else {
                 for spectator in spectators {

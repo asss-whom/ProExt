@@ -29,7 +29,7 @@ pub fn find_window(title: &str, class: Option<&str>) -> Option<HWND> {
         }
     }
 
-    return None;
+    None
 }
 
 pub fn get_window_info(hwnd: HWND) -> Option<((i32, i32), (i32, i32))> {
@@ -68,12 +68,12 @@ pub fn get_window_info(hwnd: HWND) -> Option<((i32, i32), (i32, i32))> {
                 let client_width = client_rect.right - client_rect.left;
                 let client_height = client_rect.bottom - client_rect.top;
 
-                return Some((
+                Some((
                     (window_rect.left, window_rect.top),
                     (client_width, client_height),
-                ));
+                ))
             }
-            Err(_) => return None,
+            Err(_) => None,
         }
     }
 }
@@ -85,16 +85,11 @@ pub fn hide_window_from_capture(hwnd: HWND, toggle: bool) -> bool {
         affinity = WINDOW_DISPLAY_AFFINITY(0x00000011);
     }
 
-    return unsafe {
-        match SetWindowDisplayAffinity(hwnd, affinity) {
-            Ok(_) => true,
-            Err(_) => false,
-        }
-    };
+    unsafe { SetWindowDisplayAffinity(hwnd, affinity).is_ok() }
 }
 
 pub fn is_window_focused(window: HWND) -> bool {
-    return unsafe { GetForegroundWindow() } == window;
+    (unsafe { GetForegroundWindow() } == window)
 }
 
 pub fn focus_window(window: HWND) {
@@ -125,7 +120,7 @@ pub fn create_window(title: &str, hwnd: HWND) -> (EventLoop<()>, Window) {
             .unwrap()
     };
 
-    return (event_loop, window);
+    (event_loop, window)
 }
 
 pub fn get_glow_context(window: &Window) -> glow::Context {

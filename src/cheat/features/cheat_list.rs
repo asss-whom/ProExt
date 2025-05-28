@@ -37,7 +37,7 @@ pub fn render_cheat_list(
         .always_auto_resize(true)
         .position(window_position, condition)
         .build(|| {
-            (*CONFIG.lock().unwrap()).window_positions.cheat_list = ui.window_pos();
+            CONFIG.lock().unwrap().window_positions.cheat_list = ui.window_pos();
 
             let cheat_list_one_f32 = color_u32_to_f32(config.misc.cheat_list_color_one);
             let cheat_list_one_color = Vector4 {

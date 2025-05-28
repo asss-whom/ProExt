@@ -45,7 +45,7 @@ pub fn is_enemy_at_crosshair(
 
     let mut pawn_address: u64 = 0;
 
-    if let Some(sum) = (0x78 as u64).checked_mul(u_handle.bitand(0x1FF) as u64) {
+    if let Some(sum) = 0x78_u64.checked_mul(u_handle.bitand(0x1FF) as u64) {
         if !rpm_offset(list_entry, sum, &mut pawn_address) {
             return (false, false, 0, None);
         }
@@ -83,7 +83,7 @@ pub fn is_enemy_at_crosshair(
         return (false, false, 0, None);
     }
 
-    return (
+    (
         true,
         if exclude_team {
             local_entity_controller_team_id != entity_team_id && entity_health > 0
@@ -92,7 +92,7 @@ pub fn is_enemy_at_crosshair(
         },
         pawn_address,
         Some(entity_pos),
-    );
+    )
 }
 
 pub fn is_enemy_visible(
@@ -101,8 +101,8 @@ pub fn is_enemy_visible(
     local_player_controller_index: u64,
     i: u64,
 ) -> bool {
-    return b_spotted_by_mask.bitand((1 as u64).shl(local_player_controller_index)) != 0
-        || local_b_spotted_by_mask.bitand((1 as u64).shl(i)) != 0;
+    b_spotted_by_mask.bitand(1_u64.shl(local_player_controller_index)) != 0
+        || local_b_spotted_by_mask.bitand(1_u64.shl(i)) != 0
 }
 
 pub fn get_bomb(bomb_address: u64) -> Option<u64> {
@@ -116,7 +116,7 @@ pub fn get_bomb(bomb_address: u64) -> Option<u64> {
         return None;
     }
 
-    return Some(planted_bomb);
+    Some(planted_bomb)
 }
 
 pub fn get_bomb_planted(bomb_address: u64) -> bool {
@@ -130,7 +130,7 @@ pub fn get_bomb_planted(bomb_address: u64) -> bool {
         return false;
     }
 
-    return is_bomb_planted;
+    is_bomb_planted
 }
 
 pub fn get_bomb_site(planted_bomb: u64) -> Option<String> {
@@ -145,9 +145,9 @@ pub fn get_bomb_site(planted_bomb: u64) -> Option<String> {
     }
 
     if site == 1 {
-        return Some("B".to_string());
+        Some("B".to_string())
     } else {
-        return Some("A".to_string());
+        Some("A".to_string())
     }
 }
 
@@ -176,7 +176,7 @@ pub fn get_bomb_position(planted_bomb: u64) -> Option<Vector3<f32>> {
         return None;
     }
 
-    return Some(bomb_pos);
+    Some(bomb_pos)
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -197,19 +197,19 @@ pub enum WeaponType {
 }
 
 pub fn has_weapon(weapon_type: WeaponType) -> bool {
-    return match weapon_type {
-        WeaponType::Pistol => true,
-        WeaponType::Rifle => true,
-        WeaponType::Submachine => true,
-        WeaponType::Sniper => true,
-        WeaponType::Shotgun => true,
-        WeaponType::MachineGun => true,
-        _ => false,
-    };
+    matches!(
+        weapon_type,
+        WeaponType::Pistol
+            | WeaponType::Rifle
+            | WeaponType::Submachine
+            | WeaponType::Sniper
+            | WeaponType::Shotgun
+            | WeaponType::MachineGun
+    )
 }
 
 pub fn parse_weapon(name: String) -> (WeaponType, &'static str) {
-    return match name.as_str() {
+    match name.as_str() {
         "ak47" => (WeaponType::Rifle, "AK-47"),
         "aug" => (WeaponType::Rifle, "AUG"),
         "awp" => (WeaponType::Sniper, "AWP"),
@@ -256,13 +256,13 @@ pub fn parse_weapon(name: String) -> (WeaponType, &'static str) {
         "usp_silencer" => (WeaponType::Pistol, "USP-S"),
         "xm1014" => (WeaponType::Shotgun, "XM1014"),
         _ => (WeaponType::Other, ""),
-    };
+    }
 }
 
 pub fn cache_to_punch(aim_punch_cache: CUtlVector) -> Option<Vector2<f32>> {
     let mut punch = Vector2 { x: 0.0, y: 0.0 };
 
-    if aim_punch_cache.count <= 0 || aim_punch_cache.count > 0xFFFF {
+    if aim_punch_cache.count == 0 || aim_punch_cache.count > 0xFFFF {
         return None;
     }
 
@@ -277,17 +277,13 @@ pub fn cache_to_punch(aim_punch_cache: CUtlVector) -> Option<Vector2<f32>> {
         return None;
     }
 
-    return Some(punch);
+    Some(punch)
 }
 
 pub fn is_io_pressed(key: usize) -> bool {
     match hotkey_index_to_io(key) {
-        Ok(button) => {
-            return button.is_pressed();
-        }
-        Err(key) => {
-            return key.is_pressed();
-        }
+        Ok(button) => button.is_pressed(),
+        Err(key) => key.is_pressed(),
     }
 }
 
@@ -300,17 +296,17 @@ pub fn is_feature_toggled(
     let pressed = is_io_pressed(key);
 
     if mode == 0 {
-        return pressed;
+        pressed
     } else {
         if pressed && (*toggle_changed).elapsed() > ProgramConfig::CheatDelays::Toggle {
             *toggle_toggled = !*toggle_toggled;
             *toggle_changed = Instant::now();
         }
 
-        return *toggle_toggled;
+        *toggle_toggled
     }
 }
 
 pub fn calculate_distance(position: Vector3<f32>, local_position: Vector3<f32>) -> u32 {
-    return distance_between_vec3(position, local_position) as u32 / 100;
+    distance_between_vec3(position, local_position) as u32 / 100
 }

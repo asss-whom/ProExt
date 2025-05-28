@@ -20,13 +20,9 @@ This project was originally based on the code from [snipcola/ProExt](https://git
 
 ## 📝 Instructions:
 
-To use ProExt, you can follow two methods.
+To use ProExt, you can follow the methods.
 
-### Method 1: Download the prebuilt binary
-
-This method is the easiest and is recommended for most. You can find the latest binary [here](https://git.snipcola.com/snipcola/ProExt/raw/branch/main/bin/proext.exe).
-
-### Method 2: Build the application
+### Method: Build the application
 
 #### Requirements:
 

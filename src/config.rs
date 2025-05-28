@@ -89,7 +89,7 @@ pub mod ProgramConfig {
         pub const Description: &str = "An open-source, external CS2 cheat.";
         pub const Executable: &str = "proext.exe";
         pub const Version: &str = env!("CARGO_PKG_VERSION");
-        pub const Authors: &str = &env!("CARGO_PKG_AUTHORS");
+        pub const Authors: &str = env!("CARGO_PKG_AUTHORS");
     }
 
     pub mod Imgui {
@@ -100,20 +100,6 @@ pub mod ProgramConfig {
             pub const Cryillic: &str = "C:/Windows/Fonts/Arial.ttf";
             pub const Arabic: &str = "C:/Windows/Fonts/calibri.ttf";
         }
-    }
-
-    pub mod Update {
-        pub const Enabled: bool = true;
-        pub const URL: &str =
-            "https://git.snipcola.com/snipcola/ProExt/raw/branch/main/bin/proext.exe";
-        pub const CargoTomlURL: &str =
-            "https://git.snipcola.com/snipcola/ProExt/raw/branch/main/Cargo.toml";
-    }
-
-    pub mod Links {
-        pub const Source: &str = "https://git.snipcola.com/snipcola/ProExt";
-        pub const License: &str =
-            "https://git.snipcola.com/snipcola/ProExt/raw/branch/main/LICENSE";
     }
 
     pub mod Keys {

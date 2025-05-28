@@ -68,8 +68,8 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
 
         loop {
             let game = GAME.lock().unwrap().clone();
-            let config = CONFIG.lock().unwrap().clone();
-            let window_info = match window_info.lock().unwrap().clone() {
+            let config = *CONFIG.lock().unwrap();
+            let window_info = match *window_info.lock().unwrap() {
                 Some(window_info) => window_info,
                 None => {
                     continue;
@@ -161,27 +161,26 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
                 get_crosshair_config(config.crosshair.configs, local_entity.pawn.weapon_type)
             };
 
-            let is_aimbot_toggled = !no_pawn
+            let is_aimbot_toggled = (get_aimbot_toggled(config) || config.aimbot.always)
+                && (!no_weapon || !config.aimbot.only_weapon)
+                && is_game_window_focused
                 && config.aimbot.enabled
+                && !no_pawn;
+            let is_triggerbot_toggled = (get_triggerbot_toggled(config)
+                || config.triggerbot.always)
+                && (!no_weapon || !config.triggerbot.only_weapon)
                 && is_game_window_focused
-                && (!config.aimbot.only_weapon || config.aimbot.only_weapon && !no_weapon)
-                && (config.aimbot.always || get_aimbot_toggled(config));
-            let is_triggerbot_toggled = !no_pawn
                 && config.triggerbot.enabled
-                && is_game_window_focused
-                && (!config.triggerbot.only_weapon || config.triggerbot.only_weapon && !no_weapon)
-                && (config.triggerbot.always || get_triggerbot_toggled(config));
+                && !no_pawn;
             let is_rcs_toggled = !no_pawn
                 && config.rcs.enabled
                 && is_game_window_focused
                 && (config.rcs.always || get_rcs_toggled(config));
             let is_esp_toggled =
                 config.esp.enabled && (config.esp.always || get_esp_toggled(config));
-            let is_crosshair_toggled = config.crosshair.enabled
-                && (!config.crosshair.only_weapon
-                    || no_pawn
-                    || config.crosshair.only_weapon && !no_weapon)
-                && (config.crosshair.always || get_crosshair_toggled(config));
+            let is_crosshair_toggled = (!no_weapon || no_pawn || !config.crosshair.only_weapon)
+                && (get_crosshair_toggled(config) || config.crosshair.always)
+                && config.crosshair.enabled;
             let is_radar_toggled =
                 config.radar.enabled && (config.radar.always || get_radar_toggled(config));
 
@@ -207,7 +206,7 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
                 (*render_list.lock().unwrap()).remove("cheat_list");
             }
 
-            if !rpm(matrix_address, &mut (*GAME.lock().unwrap()).view.matrix, 64) {
+            if !rpm(matrix_address, &mut GAME.lock().unwrap().view.matrix, 64) {
                 remove_ui_elements();
                 continue;
             }
@@ -330,11 +329,11 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
             let mut local_player_controller_index = 1;
 
             // Entities
-            for i in 0..64 {
+            for i in 0..64u64 {
                 let mut entity = Entity::default();
                 let mut entity_address: u64 = 0;
 
-                if let Some(sum) = ((i + 1) as u64).checked_mul(0x78) {
+                if let Some(sum) = (i + 1).checked_mul(0x78) {
                     if !rpm_offset(game.address.entity_list_entry, sum, &mut entity_address) {
                         remove_esp(i);
                         continue;
@@ -649,15 +648,12 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
 
             let aimbot_info = {
                 if let Some(aim_pos) = aim_pos {
-                    match get_aimbot_yaw_pitch(
+                    get_aimbot_yaw_pitch(
                         aimbot_config,
                         aim_pos,
                         local_entity.pawn.camera_pos,
                         local_entity.pawn.view_angle,
-                    ) {
-                        Some(v) => Some(v),
-                        None => None,
-                    }
+                    )
                 } else {
                     None
                 }
@@ -716,12 +712,10 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
             }
 
             // FOV Circle
-            if !no_pawn
-                && config.aimbot.enabled
+            if (!no_weapon || !config.aimbot.only_weapon)
                 && aimbot_config.fov_circle_enabled
-                && (!config.aimbot.only_weapon || config.aimbot.only_weapon && !no_weapon)
-                && (!aimbot_config.fov_circle_only_toggled
-                    || aimbot_config.fov_circle_only_toggled && is_aimbot_toggled)
+                && config.aimbot.enabled
+                && !no_pawn
             {
                 (*render_list.lock().unwrap()).insert(
                     "fov_circle".to_string(),
@@ -775,8 +769,10 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
                 && aiming_at_pos.is_some();
 
             // RCS
-            if rcs_info.is_some() && !aimbot_toggled {
-                run_rcs(rcs_info.unwrap());
+            if let Some(rcs_info) = rcs_info {
+                if !aimbot_toggled {
+                    run_rcs(rcs_info);
+                }
             }
 
             // Aimbot

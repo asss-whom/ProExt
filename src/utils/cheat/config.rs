@@ -1,6 +1,6 @@
 use std::fs::{create_dir_all, metadata, read_dir, remove_file, File, OpenOptions};
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex, LazyLock};
+use std::sync::{Arc, LazyLock, Mutex};
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -67,7 +67,7 @@ pub struct ESP {
 
 impl Default for ESP {
     fn default() -> Self {
-        return Self {
+        Self {
             enabled: true,
             key: 8,
             mode: 1,
@@ -119,7 +119,7 @@ impl Default for ESP {
             snap_line_mode: 1,
             headshot_line_enabled: false,
             headshot_line_color: (255, 255, 255, 255),
-        };
+        }
     }
 }
 
@@ -134,17 +134,17 @@ pub struct RCSConfig {
 
 impl Default for RCSConfig {
     fn default() -> Self {
-        return Self {
+        Self {
             start_bullet: 1,
             yaw: 1.0,
             yaw_offset: 0.2,
             pitch: 1.0,
             pitch_offset: 0.2,
-        };
+        }
     }
 }
 
-#[derive(Clone, Copy, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Copy, Serialize, Deserialize, PartialEq, Default)]
 pub struct RCSConfigs {
     pub shared: RCSConfig,
     pub pistol: RCSConfig,
@@ -154,21 +154,6 @@ pub struct RCSConfigs {
     pub shotgun: RCSConfig,
     pub machinegun: RCSConfig,
     pub other: RCSConfig,
-}
-
-impl Default for RCSConfigs {
-    fn default() -> Self {
-        return Self {
-            shared: RCSConfig::default(),
-            pistol: RCSConfig::default(),
-            rifle: RCSConfig::default(),
-            submachine: RCSConfig::default(),
-            sniper: RCSConfig::default(),
-            shotgun: RCSConfig::default(),
-            machinegun: RCSConfig::default(),
-            other: RCSConfig::default(),
-        };
-    }
 }
 
 #[derive(Clone, Copy, Serialize, Deserialize, PartialEq)]
@@ -185,7 +170,7 @@ pub struct RCS {
 
 impl Default for RCS {
     fn default() -> Self {
-        return Self {
+        Self {
             enabled: false,
             key: 9,
             mode: 1,
@@ -194,7 +179,7 @@ impl Default for RCS {
             shared: false,
             sensitivity: 3.0,
             configs: RCSConfigs::default(),
-        };
+        }
     }
 }
 
@@ -226,7 +211,7 @@ pub struct AimbotConfig {
 
 impl Default for AimbotConfig {
     fn default() -> Self {
-        return Self {
+        Self {
             fov_circle_enabled: true,
             fov_circle_color: (255, 255, 255, 255),
             fov_circle_target_enabled: true,
@@ -249,15 +234,16 @@ impl Default for AimbotConfig {
             min_distance: 150,
             max_distance_enabled: false,
             max_distance: 0,
-        };
+        }
     }
 }
 
 impl AimbotConfig {
     fn sniper() -> Self {
-        let mut base = Self::default();
-        base.fov_circle_enabled = false;
-        return base;
+        Self {
+            fov_circle_enabled: false,
+            ..Default::default()
+        }
     }
 }
 
@@ -276,7 +262,7 @@ pub struct AimbotConfigs {
 
 impl Default for AimbotConfigs {
     fn default() -> Self {
-        return Self {
+        Self {
             shared: AimbotConfig::default(),
             pistol: AimbotConfig::default(),
             rifle: AimbotConfig::default(),
@@ -286,7 +272,7 @@ impl Default for AimbotConfigs {
             machinegun: AimbotConfig::default(),
             knife: AimbotConfig::default(),
             other: AimbotConfig::default(),
-        };
+        }
     }
 }
 
@@ -304,7 +290,7 @@ pub struct Aimbot {
 
 impl Default for Aimbot {
     fn default() -> Self {
-        return Self {
+        Self {
             enabled: true,
             key: 0,
             mode: 0,
@@ -313,7 +299,7 @@ impl Default for Aimbot {
             shared: false,
             only_weapon: true,
             configs: AimbotConfigs::default(),
-        };
+        }
     }
 }
 
@@ -332,7 +318,7 @@ pub struct TriggerbotConfig {
 
 impl Default for TriggerbotConfig {
     fn default() -> Self {
-        return Self {
+        Self {
             action: 0,
             tap_interval: 160,
             tap_interval_offset: 15,
@@ -342,15 +328,16 @@ impl Default for TriggerbotConfig {
             min_distance: 150,
             max_distance_enabled: false,
             max_distance: 0,
-        };
+        }
     }
 }
 
 impl TriggerbotConfig {
     fn press() -> Self {
-        let mut base = Self::default();
-        base.action = 1;
-        return base;
+        Self {
+            action: 1,
+            ..Default::default()
+        }
     }
 }
 
@@ -369,7 +356,7 @@ pub struct TriggerbotConfigs {
 
 impl Default for TriggerbotConfigs {
     fn default() -> Self {
-        return Self {
+        Self {
             shared: TriggerbotConfig::default(),
             pistol: TriggerbotConfig::default(),
             rifle: TriggerbotConfig::press(),
@@ -379,7 +366,7 @@ impl Default for TriggerbotConfigs {
             machinegun: TriggerbotConfig::press(),
             knife: TriggerbotConfig::default(),
             other: TriggerbotConfig::default(),
-        };
+        }
     }
 }
 
@@ -397,7 +384,7 @@ pub struct Triggerbot {
 
 impl Default for Triggerbot {
     fn default() -> Self {
-        return Self {
+        Self {
             enabled: false,
             key: 0,
             mode: 0,
@@ -406,7 +393,7 @@ impl Default for Triggerbot {
             shared: false,
             only_weapon: true,
             configs: TriggerbotConfigs::default(),
-        };
+        }
     }
 }
 
@@ -429,7 +416,7 @@ pub struct CrosshairConfig {
 
 impl Default for CrosshairConfig {
     fn default() -> Self {
-        return Self {
+        Self {
             color: (255, 255, 255, 255),
             target_enabled: true,
             target_color: (255, 0, 0, 255),
@@ -443,11 +430,11 @@ impl Default for CrosshairConfig {
             lines_height: 9,
             lines_space: 7,
             lines_thickness: 1,
-        };
+        }
     }
 }
 
-#[derive(Clone, Copy, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Copy, Serialize, Deserialize, PartialEq, Default)]
 pub struct CrosshairConfigs {
     pub shared: CrosshairConfig,
     pub pistol: CrosshairConfig,
@@ -458,22 +445,6 @@ pub struct CrosshairConfigs {
     pub machinegun: CrosshairConfig,
     pub knife: CrosshairConfig,
     pub other: CrosshairConfig,
-}
-
-impl Default for CrosshairConfigs {
-    fn default() -> Self {
-        return Self {
-            shared: CrosshairConfig::default(),
-            pistol: CrosshairConfig::default(),
-            rifle: CrosshairConfig::default(),
-            submachine: CrosshairConfig::default(),
-            sniper: CrosshairConfig::default(),
-            shotgun: CrosshairConfig::default(),
-            machinegun: CrosshairConfig::default(),
-            knife: CrosshairConfig::default(),
-            other: CrosshairConfig::default(),
-        };
-    }
 }
 
 #[derive(Clone, Copy, Serialize, Deserialize, PartialEq)]
@@ -490,7 +461,7 @@ pub struct Crosshair {
 
 impl Default for Crosshair {
     fn default() -> Self {
-        return Self {
+        Self {
             enabled: true,
             key: 10,
             mode: 1,
@@ -499,7 +470,7 @@ impl Default for Crosshair {
             shared: false,
             only_weapon: true,
             configs: CrosshairConfigs::default(),
-        };
+        }
     }
 }
 
@@ -527,7 +498,7 @@ pub struct Radar {
 
 impl Default for Radar {
     fn default() -> Self {
-        return Self {
+        Self {
             enabled: true,
             key: 11,
             mode: 1,
@@ -546,7 +517,7 @@ impl Default for Radar {
             point_size: 1.0,
             proportion: 37,
             range: 143,
-        };
+        }
     }
 }
 
@@ -568,7 +539,7 @@ pub struct Misc {
 
 impl Default for Misc {
     fn default() -> Self {
-        return Self {
+        Self {
             enabled: true,
             watermark_enabled: true,
             watermark_color_one: (255, 255, 0, 255),
@@ -581,7 +552,7 @@ impl Default for Misc {
             bomb_timer_color_enabled: (255, 0, 0, 255),
             spectator_list_enabled: false,
             spectator_list_color: (0, 255, 255, 255),
-        };
+        }
     }
 }
 
@@ -619,7 +590,7 @@ pub struct StyleColors {
 
 impl Default for StyleColors {
     fn default() -> Self {
-        return Self {
+        Self {
             text: (225, 225, 225, 255),
             text_disabled: (200, 200, 200, 255),
             window_bg: (25, 25, 25, 235),
@@ -648,7 +619,7 @@ impl Default for StyleColors {
             tab_hovered: (51, 128, 245, 175),
             tab_active: (51, 128, 245, 150),
             separator: (175, 175, 175, 125),
-        };
+        }
     }
 }
 
@@ -678,7 +649,7 @@ pub struct Style {
 
 impl Default for Style {
     fn default() -> Self {
-        return Self {
+        Self {
             enabled: true,
             alpha: 1.0,
             window_padding: [7.5, 7.5],
@@ -699,7 +670,7 @@ impl Default for Style {
             indent_spacing: 2.5,
             grab_rounding: 0.0,
             colors: StyleColors::default(),
-        };
+        }
     }
 }
 
@@ -714,13 +685,13 @@ pub struct Settings {
 
 impl Default for Settings {
     fn default() -> Self {
-        return Self {
+        Self {
             enabled: true,
             bypass_capture: true,
             exclude_team: true,
             show_on_spectate: true,
             toggle_bg_alpha: 0.2,
-        };
+        }
     }
 }
 
@@ -736,18 +707,18 @@ pub struct WindowPositions {
 
 impl Default for WindowPositions {
     fn default() -> Self {
-        return Self {
+        Self {
             menu: [600.0, 150.0],
             watermark: [315.0, 5.0],
             cheat_list: [315.0, 70.0],
             bomb_timer: [5.0, 330.0],
             spectator_list: [5.0, 415.0],
             radar: [5.0, 5.0],
-        };
+        }
     }
 }
 
-#[derive(Clone, Copy, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Copy, Serialize, Deserialize, PartialEq, Default)]
 pub struct Config {
     pub esp: ESP,
     pub rcs: RCS,
@@ -759,23 +730,6 @@ pub struct Config {
     pub style: Style,
     pub settings: Settings,
     pub window_positions: WindowPositions,
-}
-
-impl Default for Config {
-    fn default() -> Self {
-        return Self {
-            esp: ESP::default(),
-            rcs: RCS::default(),
-            aimbot: Aimbot::default(),
-            triggerbot: Triggerbot::default(),
-            crosshair: Crosshair::default(),
-            radar: Radar::default(),
-            misc: Misc::default(),
-            style: Style::default(),
-            settings: Settings::default(),
-            window_positions: WindowPositions::default(),
-        };
-    }
 }
 
 impl Config {
@@ -803,7 +757,7 @@ impl Config {
             update_configs();
         }
 
-        return Ok(());
+        Ok(())
     }
 }
 
@@ -828,14 +782,14 @@ pub fn get_directory_dir(name: &str) -> Option<String> {
         };
     };
 
-    return None;
+    None
 }
 
 pub fn update_configs() -> Option<String> {
     let config_dir = CONFIG_DIR.lock().unwrap().clone();
     let directory_pathbuf = PathBuf::from(&*config_dir);
 
-    if !metadata(&directory_pathbuf).is_ok() {
+    if metadata(&directory_pathbuf).is_err() {
         match create_dir_all(&directory_pathbuf) {
             Ok(_) => {}
             Err(_) => {
@@ -855,23 +809,21 @@ pub fn update_configs() -> Option<String> {
     let default_config_name = &*DEFAULT_CONFIG;
     let mut update_default_config = false;
 
-    for path in paths {
-        if let Ok(entry) = path {
-            if let Some(file_name) = entry.file_name().to_str() {
-                if file_name.ends_with(&format!(".{}", *CONFIG_EXTENSION)) {
-                    if let Some(config_path) = directory_pathbuf.join(file_name).to_str() {
-                        match load_config(config_path) {
-                            Ok(config) => {
-                                let (config_index, _) =
-                                    configs.insert_full(file_name.to_string(), Some(config));
+    for entry in paths.flatten() {
+        if let Some(file_name) = entry.file_name().to_str() {
+            if file_name.ends_with(&format!(".{}", *CONFIG_EXTENSION)) {
+                if let Some(config_path) = directory_pathbuf.join(file_name).to_str() {
+                    match load_config(config_path) {
+                        Ok(config) => {
+                            let (config_index, _) =
+                                configs.insert_full(file_name.to_string(), Some(config));
 
-                                if file_name == &*DEFAULT_CONFIG {
-                                    configs.move_index(config_index, 0);
-                                }
+                            if file_name == *DEFAULT_CONFIG {
+                                configs.move_index(config_index, 0);
                             }
-                            Err(_) => {
-                                configs.insert_full(file_name.to_string(), None);
-                            }
+                        }
+                        Err(_) => {
+                            configs.insert_full(file_name.to_string(), None);
                         }
                     }
                 }
@@ -889,22 +841,20 @@ pub fn update_configs() -> Option<String> {
 
     if update_default_config {
         if let Some(default_config_path) = directory_pathbuf.join(default_config_name).to_str() {
-            match CONFIG
+            if CONFIG
                 .lock()
                 .unwrap()
                 .clone()
                 .save_config(default_config_path, false)
+                .is_err()
             {
-                Err(_) => {
-                    return Some("SaveDefaultConfig".to_string());
-                }
-                Ok(_) => {}
+                return Some("SaveDefaultConfig".to_string());
             };
         }
     }
 
     *CONFIGS.lock().unwrap() = configs;
-    return None;
+    None
 }
 
 pub fn setup_config() -> Option<String> {
@@ -917,25 +867,20 @@ pub fn setup_config() -> Option<String> {
 
     *CONFIG_DIR.lock().unwrap() = directory_path.to_string();
 
-    match update_configs() {
-        Some(str) => {
-            return Some(str);
-        }
-        None => {}
+    if let Some(str) = update_configs() {
+        return Some(str);
     };
 
-    if let Some(default_config) = (*CONFIGS.lock().unwrap()).get(&*DEFAULT_CONFIG) {
-        if let Some(default_config) = default_config {
-            *CONFIG.lock().unwrap() = *default_config;
-        }
+    if let Some(Some(default_config)) = (*CONFIGS.lock().unwrap()).get(&*DEFAULT_CONFIG) {
+        *CONFIG.lock().unwrap() = *default_config;
     }
 
-    return None;
+    None
 }
 
 pub fn merge_config(a: &mut Value, b: &Value) {
     match (a, b) {
-        (&mut Value::Object(ref mut a), &Value::Object(ref b)) => {
+        (&mut Value::Object(ref mut a), Value::Object(b)) => {
             for (k, v) in b {
                 merge_config(a.entry(k.clone()).or_insert(Value::Null), v);
             }
@@ -987,24 +932,21 @@ pub fn load_config(file_path: &str) -> Result<Config, &str> {
                 }
             };
 
-            match new_config.save_config(file_path, false) {
-                Err(_) => {
-                    return Err("SaveConfig");
-                }
-                Ok(_) => {}
+            if new_config.save_config(file_path, false).is_err() {
+                return Err("SaveConfig");
             };
 
             new_config
         }
     };
 
-    return Ok(config);
+    Ok(config)
 }
 
 pub fn delete_config(file_path: &str) -> Result<bool, &str> {
-    if let Err(_) = remove_file(file_path) {
+    if remove_file(file_path).is_err() {
         return Err("DeleteFile");
     };
 
-    return Ok(true);
+    Ok(true)
 }

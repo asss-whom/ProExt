@@ -1,19 +1,16 @@
 use windows::core::HSTRING;
 use windows::Win32::Foundation::HWND;
 use windows::Win32::UI::WindowsAndMessaging::{
-    MessageBoxW, MB_ICONERROR, MB_ICONINFORMATION, MB_ICONWARNING, MB_OKCANCEL, MB_YESNO,
-    MESSAGEBOX_RESULT, MESSAGEBOX_STYLE,
+    MessageBoxW, MB_ICONERROR, MB_ICONWARNING, MB_OKCANCEL, MESSAGEBOX_RESULT, MESSAGEBOX_STYLE,
 };
 
 pub enum MessageBoxStyle {
-    Info,
     Warning,
     Error,
 }
 
 pub enum MessageBoxButtons {
     OkCancel,
-    YesNo,
 }
 
 pub enum MessageBoxResult {
@@ -25,28 +22,26 @@ pub enum MessageBoxResult {
 }
 
 pub fn convert_mbstyle(style: MessageBoxStyle) -> MESSAGEBOX_STYLE {
-    return match style {
-        MessageBoxStyle::Info => MB_ICONINFORMATION,
+    match style {
         MessageBoxStyle::Warning => MB_ICONWARNING,
         MessageBoxStyle::Error => MB_ICONERROR,
-    };
+    }
 }
 
 pub fn convert_mbbuttons(button: MessageBoxButtons) -> MESSAGEBOX_STYLE {
-    return match button {
+    match button {
         MessageBoxButtons::OkCancel => MB_OKCANCEL,
-        MessageBoxButtons::YesNo => MB_YESNO,
-    };
+    }
 }
 
 pub fn convert_mbresult(result: MESSAGEBOX_RESULT) -> MessageBoxResult {
-    return match result {
+    match result {
         MESSAGEBOX_RESULT(1) => MessageBoxResult::Ok,
         MESSAGEBOX_RESULT(2) => MessageBoxResult::Cancel,
         MESSAGEBOX_RESULT(6) => MessageBoxResult::Yes,
         MESSAGEBOX_RESULT(7) => MessageBoxResult::No,
         _ => MessageBoxResult::None,
-    };
+    }
 }
 
 pub fn create_messagebox(style: MessageBoxStyle, caption: &str, text: &str) {
@@ -70,7 +65,7 @@ pub fn create_dialog(
     let style = convert_mbstyle(style);
     let buttons = convert_mbbuttons(buttons);
 
-    return convert_mbresult(unsafe {
+    convert_mbresult(unsafe {
         MessageBoxW(Some(HWND::default()), &text, &caption, style | buttons)
-    });
+    })
 }

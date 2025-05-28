@@ -39,6 +39,6 @@ impl View {
                 / view
                 * sight_y;
 
-        return true;
+        true
     }
 }

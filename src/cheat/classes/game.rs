@@ -51,22 +51,22 @@ pub struct Address {
 pub fn init_game_address() -> bool {
     let mut game = GAME.lock().unwrap();
 
-    (*game).address.client_dll = get_process_module_handle("client.dll") as u64;
-    (*game).address.entity_list = (*game).address.client_dll + dwEntityList as u64;
-    (*game).address.matrix = (*game).address.client_dll + dwViewMatrix as u64;
-    (*game).address.view_angle = (*game).address.client_dll + dwViewAngles as u64;
-    (*game).address.local_controller = (*game).address.client_dll + dwLocalPlayerController as u64;
-    (*game).address.local_pawn = (*game).address.client_dll + dwLocalPlayerPawn as u64;
-    (*game).address.bomb = (*game).address.client_dll + dwPlantedC4 as u64;
+    game.address.client_dll = get_process_module_handle("client.dll");
+    game.address.entity_list = game.address.client_dll + dwEntityList as u64;
+    game.address.matrix = game.address.client_dll + dwViewMatrix as u64;
+    game.address.view_angle = game.address.client_dll + dwViewAngles as u64;
+    game.address.local_controller = game.address.client_dll + dwLocalPlayerController as u64;
+    game.address.local_pawn = game.address.client_dll + dwLocalPlayerPawn as u64;
+    game.address.bomb = game.address.client_dll + dwPlantedC4 as u64;
 
-    return (*game).address.client_dll != 0;
+    game.address.client_dll != 0
 }
 
 pub fn update_entity_list_entry() -> bool {
     let mut game = GAME.lock().unwrap();
     let mut entity_list_entry: u64 = 0;
 
-    if !rpm_auto((*game).address.entity_list, &mut entity_list_entry) {
+    if !rpm_auto(game.address.entity_list, &mut entity_list_entry) {
         return false;
     }
 
@@ -74,6 +74,6 @@ pub fn update_entity_list_entry() -> bool {
         return false;
     }
 
-    (*game).address.entity_list_entry = entity_list_entry;
-    return (*game).address.entity_list_entry != 0;
+    game.address.entity_list_entry = entity_list_entry;
+    game.address.entity_list_entry != 0
 }

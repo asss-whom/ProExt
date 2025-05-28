@@ -19,11 +19,11 @@ pub fn get_crosshair_toggled(config: Config) -> bool {
     let mut toggled = FEATURE_TOGGLED.lock().unwrap();
     let mut changed = TOGGLE_CHANGED.lock().unwrap();
 
-    return is_feature_toggled(feature.key, feature.mode, &mut toggled, &mut changed);
+    is_feature_toggled(feature.key, feature.mode, &mut toggled, &mut changed)
 }
 
 pub fn get_crosshair_config(configs: CrosshairConfigs, weapon_type: WeaponType) -> CrosshairConfig {
-    return match weapon_type {
+    match weapon_type {
         WeaponType::Pistol => configs.pistol,
         WeaponType::Rifle => configs.rifle,
         WeaponType::Submachine => configs.submachine,
@@ -32,7 +32,7 @@ pub fn get_crosshair_config(configs: CrosshairConfigs, weapon_type: WeaponType) 
         WeaponType::MachineGun => configs.machinegun,
         WeaponType::Knife => configs.knife,
         _ => configs.other,
-    };
+    }
 }
 
 pub fn render_crosshair(
@@ -49,7 +49,7 @@ pub fn render_crosshair(
         }
     };
 
-    let (border_width, dot_size, gap) = (2.0, 1.0 as f32, config.lines_space as f32 / 2.0);
+    let (border_width, dot_size, gap) = (2.0, 1.0_f32, config.lines_space as f32 / 2.0);
     let (outline_gap, thickness) = (gap - 1.0, config.lines_thickness as f32);
 
     let offset_1 = Vector2 {

@@ -10,37 +10,19 @@ use crate::cheat::classes::bone::Bone;
 use crate::cheat::classes::game::GAME;
 use crate::cheat::classes::view::View;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Default)]
 pub struct CUtlVector {
     pub count: u64,
     pub data: u64,
 }
 
-impl Default for CUtlVector {
-    fn default() -> Self {
-        return Self { count: 0, data: 0 };
-    }
-}
-
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct PlayerController {
     pub address: u64,
     pub alive_status: i32,
     pub pawn: u64,
     pub team_id: i32,
     pub player_name: String,
-}
-
-impl Default for PlayerController {
-    fn default() -> Self {
-        return Self {
-            address: 0,
-            alive_status: 0,
-            pawn: 0,
-            team_id: 0,
-            player_name: String::new(),
-        };
-    }
 }
 
 #[derive(Clone)]
@@ -66,7 +48,7 @@ pub struct PlayerPawn {
 
 impl Default for PlayerPawn {
     fn default() -> Self {
-        return Self {
+        Self {
             address: 0,
             bone_data: Bone::default(),
             view_angle: Vector2 { x: 0.0, y: 0.0 },
@@ -92,27 +74,18 @@ impl Default for PlayerPawn {
             fov: 0,
             spotted_by_mask: 0,
             flags: 0,
-        };
+        }
     }
 }
 
 pub enum Flags {
-    InAir = (1 as isize).wrapping_shl(0),
+    InAir = 1_isize.wrapping_shl(0),
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Entity {
     pub controller: PlayerController,
     pub pawn: PlayerPawn,
-}
-
-impl Default for Entity {
-    fn default() -> Self {
-        return Entity {
-            controller: PlayerController::default(),
-            pawn: PlayerPawn::default(),
-        };
-    }
 }
 
 pub fn buffer_to_string(buffer: &[u8]) -> String {
@@ -142,7 +115,7 @@ impl Entity {
         }
 
         self.pawn.address = self.controller.get_player_pawn_address();
-        return true;
+        true
     }
 
     pub fn update_pawn(
@@ -210,15 +183,15 @@ impl Entity {
             return false;
         }
 
-        return true;
+        true
     }
 
     pub fn is_alive(&mut self) -> bool {
-        return self.controller.alive_status == 1 && self.pawn.health > 0;
+        self.controller.alive_status == 1 && self.pawn.health > 0
     }
 
     pub fn is_in_screen(&mut self, window_info: ((i32, i32), (i32, i32)), view: View) -> bool {
-        return view.world_to_screen(self.pawn.pos, &mut self.pawn.screen_pos, window_info);
+        view.world_to_screen(self.pawn.pos, &mut self.pawn.screen_pos, window_info)
     }
 
     pub fn get_bone(&mut self) -> Option<Bone> {
@@ -226,25 +199,25 @@ impl Entity {
             return None;
         }
 
-        return Some(self.pawn.bone_data.clone());
+        Some(self.pawn.bone_data.clone())
     }
 }
 
 impl PlayerController {
     pub fn get_is_alive(&mut self) -> bool {
-        return rpm_offset(
+        rpm_offset(
             self.address,
             Offsets::CCSPlayerController::m_bPawnIsAlive as u64,
             &mut self.alive_status,
-        );
+        )
     }
 
     pub fn get_team_id(&mut self) -> bool {
-        return rpm_offset(
+        rpm_offset(
             self.address,
             Offsets::C_BaseEntity::m_iTeamNum as u64,
             &mut self.team_id,
-        );
+        )
     }
 
     pub fn get_player_name(&mut self) -> bool {
@@ -264,7 +237,7 @@ impl PlayerController {
             self.player_name = player_name;
         }
 
-        return true;
+        true
     }
 
     pub fn get_player_pawn_address(&mut self) -> u64 {
@@ -280,13 +253,13 @@ impl PlayerController {
         }
 
         if !rpm_auto(
-            (*GAME.lock().unwrap()).address.entity_list,
+            GAME.lock().unwrap().address.entity_list,
             &mut entity_pawn_list_entry,
         ) {
             return 0;
         }
 
-        if let Some(sum) = (8 as u64).checked_mul(self.pawn.bitand(0x7FFF).shr(9)) {
+        if let Some(sum) = 8_u64.checked_mul(self.pawn.bitand(0x7FFF).shr(9)) {
             if !rpm_offset(
                 entity_pawn_list_entry,
                 0x10 + sum,
@@ -298,7 +271,7 @@ impl PlayerController {
             return 0;
         }
 
-        if let Some(sum) = (0x78 as u64).checked_mul(self.pawn.bitand(0x1FF)) {
+        if let Some(sum) = 0x78_u64.checked_mul(self.pawn.bitand(0x1FF)) {
             if !rpm_offset(entity_pawn_list_entry, sum, &mut entity_pawn_address) {
                 return 0;
             }
@@ -306,34 +279,34 @@ impl PlayerController {
             return 0;
         }
 
-        return entity_pawn_address;
+        entity_pawn_address
     }
 }
 
 impl PlayerPawn {
     pub fn get_view_angle(&mut self) -> bool {
-        return rpm_offset(
+        rpm_offset(
             self.address,
             Offsets::C_CSPlayerPawnBase::m_angEyeAngles as u64,
             &mut self.view_angle,
-        );
+        )
     }
 
     pub fn get_camera_pos(&mut self) -> bool {
-        return rpm_offset(
+        rpm_offset(
             self.address,
             Offsets::C_CSPlayerPawnBase::m_vecLastClipCameraPos as u64,
             &mut self.camera_pos,
-        );
+        )
     }
 
     pub fn get_spotted(&mut self) -> bool {
-        return rpm_offset(
+        rpm_offset(
             self.address,
             (Offsets::C_CSPlayerPawnBase::m_entitySpottedState
                 + Offsets::EntitySpottedState_t::m_bSpottedByMask) as u64,
             &mut self.spotted_by_mask,
-        );
+        )
     }
 
     pub fn get_weapon(&mut self) -> bool {
@@ -360,7 +333,7 @@ impl PlayerPawn {
             let (wtype, name) = parse_weapon(weapon_name.clone());
 
             self.weapon_type = wtype;
-            self.weapon_name = if name == "" {
+            self.weapon_name = if name.is_empty() {
                 weapon_name
             } else {
                 name.to_string()
@@ -405,47 +378,47 @@ impl PlayerPawn {
             return false;
         }
 
-        return true;
+        true
     }
 
     pub fn get_shots_fired(&mut self) -> bool {
-        return rpm_offset(
+        rpm_offset(
             self.address,
             Offsets::C_CSPlayerPawnBase::m_iShotsFired as u64,
             &mut self.shots_fired,
-        );
+        )
     }
 
     pub fn get_aim_punch_cache(&mut self) -> bool {
-        return rpm_offset(
+        rpm_offset(
             self.address,
             Offsets::C_CSPlayerPawn::m_aimPunchCache as u64,
             &mut self.aim_punch_cache,
-        );
+        )
     }
 
     pub fn get_pos(&mut self) -> bool {
-        return rpm_offset(
+        rpm_offset(
             self.address,
             Offsets::C_BasePlayerPawn::m_vOldOrigin as u64,
             &mut self.pos,
-        );
+        )
     }
 
     pub fn get_health(&mut self) -> bool {
-        return rpm_offset(
+        rpm_offset(
             self.address,
             Offsets::C_BaseEntity::m_iHealth as u64,
             &mut self.health,
-        );
+        )
     }
 
     pub fn get_armor(&mut self) -> bool {
-        return rpm_offset(
+        rpm_offset(
             self.address,
             Offsets::C_CSPlayerPawnBase::m_ArmorValue as u64,
             &mut self.armor,
-        );
+        )
     }
 
     pub fn get_fov(&mut self) -> bool {
@@ -459,22 +432,22 @@ impl PlayerPawn {
             return false;
         }
 
-        return rpm_offset(
+        rpm_offset(
             camera_services,
             Offsets::CCSPlayerBase_CameraServices::m_iFOVStart as u64,
             &mut self.fov,
-        );
+        )
     }
 
     pub fn get_f_flags(&mut self) -> bool {
-        return rpm_offset(
+        rpm_offset(
             self.address,
             Offsets::C_BaseEntity::m_fFlags as u64,
             &mut self.flags,
-        );
+        )
     }
 
     pub fn has_flag(&mut self, flag: Flags) -> bool {
-        return self.flags & (flag as i32) != 0;
+        self.flags & (flag as i32) != 0
     }
 }

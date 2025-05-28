@@ -22,7 +22,7 @@ pub fn get_radar_toggled(config: Config) -> bool {
     let mut toggled = FEATURE_TOGGLED.lock().unwrap();
     let mut changed = TOGGLE_CHANGED.lock().unwrap();
 
-    return is_feature_toggled(feature.key, feature.mode, &mut toggled, &mut changed);
+    is_feature_toggled(feature.key, feature.mode, &mut toggled, &mut changed)
 }
 
 pub fn revolve_coordinates_system(
@@ -42,7 +42,7 @@ pub fn revolve_coordinates_system(
     result_pos.y = origin_pos.y - (dest_pos.x - origin_pos.x) * (revolve_angle * PI / 180.0).sin()
         + (dest_pos.y - origin_pos.y) * (revolve_angle * PI / 180.0).cos();
 
-    return result_pos;
+    result_pos
 }
 
 pub fn render_radar(
@@ -75,7 +75,7 @@ pub fn render_radar(
         )
         .position(window_position, condition)
         .build(|| {
-            (*CONFIG.lock().unwrap()).window_positions.radar = ui.window_pos();
+            CONFIG.lock().unwrap().window_positions.radar = ui.window_pos();
 
             let (full_window_pos, full_window_size) = (ui.window_pos(), ui.window_size());
             let window_pos = Vector2 {
@@ -159,12 +159,10 @@ pub fn render_radar(
 
                 let radar_color = if is_friendly && config.radar.friendly_enabled {
                     config.radar.friendly_color
+                } else if is_visible && config.radar.target_enabled {
+                    config.radar.target_color
                 } else {
-                    if is_visible && config.radar.target_enabled {
-                        config.radar.target_color
-                    } else {
-                        config.radar.color
-                    }
+                    config.radar.color
                 };
 
                 if config.radar.style == 0 {

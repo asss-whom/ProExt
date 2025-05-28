@@ -80,5 +80,5 @@ pub fn init_imgui(window: &Window) -> (WinitPlatform, Context) {
     imgui_context.fonts().add_font(&fonts);
     imgui_context.io_mut().font_global_scale = (1.0 / winit_platform.hidpi_factor()) as f32;
 
-    return (winit_platform, imgui_context);
+    (winit_platform, imgui_context)
 }

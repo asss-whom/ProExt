@@ -17,14 +17,14 @@ pub fn get_current_time() -> String {
 
     if let Ok(duration) = now.duration_since(SystemTime::UNIX_EPOCH) {
         let secs = duration.as_secs();
-        return format!(
+        format!(
             "{:02}:{:02}:{:02}",
             (secs / 3600) % 24,
             (secs / 60) % 60,
             secs % 60
-        );
+        )
     } else {
-        return "00:00:00".to_string();
+        "00:00:00".to_string()
     }
 }
 
@@ -44,7 +44,7 @@ pub fn render_watermark(ui: &mut Ui, config: Config) {
         .always_auto_resize(true)
         .position(window_position, condition)
         .build(|| {
-            (*CONFIG.lock().unwrap()).window_positions.watermark = ui.window_pos();
+            CONFIG.lock().unwrap().window_positions.watermark = ui.window_pos();
 
             let watermark_one_f32 = color_u32_to_f32(config.misc.watermark_color_one);
             let watermark_one_color = Vector4 {

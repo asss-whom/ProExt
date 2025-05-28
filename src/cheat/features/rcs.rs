@@ -22,11 +22,11 @@ pub fn get_rcs_toggled(config: Config) -> bool {
     let mut toggled = FEATURE_TOGGLED.lock().unwrap();
     let mut changed = TOGGLE_CHANGED.lock().unwrap();
 
-    return is_feature_toggled(feature.key, feature.mode, &mut toggled, &mut changed);
+    is_feature_toggled(feature.key, feature.mode, &mut toggled, &mut changed)
 }
 
 pub fn get_rcs_config(configs: RCSConfigs, weapon_type: WeaponType) -> RCSConfig {
-    return match weapon_type {
+    match weapon_type {
         WeaponType::Pistol => configs.pistol,
         WeaponType::Rifle => configs.rifle,
         WeaponType::Submachine => configs.submachine,
@@ -34,7 +34,7 @@ pub fn get_rcs_config(configs: RCSConfigs, weapon_type: WeaponType) -> RCSConfig
         WeaponType::Shotgun => configs.shotgun,
         WeaponType::MachineGun => configs.machinegun,
         _ => configs.other,
-    };
+    }
 }
 
 pub fn get_rcs_yaw_pitch(config: RCSConfig, rng: &mut ThreadRng) -> (f32, f32) {
@@ -43,16 +43,16 @@ pub fn get_rcs_yaw_pitch(config: RCSConfig, rng: &mut ThreadRng) -> (f32, f32) {
     } else {
         (rng.random_range(-config.yaw_offset..config.yaw_offset) * 1000.0).trunc() / 1000.0
     };
-    let yaw = (config.yaw + yaw_offset).min(2.0).max(0.0);
+    let yaw = (config.yaw + yaw_offset).clamp(0.0, 2.0);
 
     let pitch_offset = if config.pitch_offset == 0.0 {
         0.0
     } else {
         (rng.random_range(-config.pitch_offset..config.pitch_offset) * 1000.0).trunc() / 1000.0
     };
-    let pitch = (config.pitch + pitch_offset).min(2.0).max(0.0);
+    let pitch = (config.pitch + pitch_offset).clamp(0.0, 2.0);
 
-    return (yaw, pitch);
+    (yaw, pitch)
 }
 
 pub fn calculate_rcs_position(
@@ -77,7 +77,7 @@ pub fn calculate_rcs_position(
         return None;
     }
 
-    return Some((new_punch.x as i32, new_punch.y as i32));
+    Some((new_punch.x as i32, new_punch.y as i32))
 }
 
 pub fn get_rcs_mouse(
@@ -91,7 +91,7 @@ pub fn get_rcs_mouse(
         return calculate_rcs_position(config, rcs_config, punch, shots_fired, rng);
     }
 
-    return None;
+    None
 }
 
 pub fn run_rcs((x, y): (i32, i32)) {

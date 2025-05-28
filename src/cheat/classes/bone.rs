@@ -42,7 +42,7 @@ pub struct BoneJointPos {
 
 impl Default for BoneJointPos {
     fn default() -> Self {
-        return Self {
+        Self {
             pos: Vector3 {
                 x: 0.0,
                 y: 0.0,
@@ -50,23 +50,14 @@ impl Default for BoneJointPos {
             },
             screen_pos: Vector2 { x: 0.0, y: 0.0 },
             is_visible: false,
-        };
+        }
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Bone {
     pub entity_pawn_address: u64,
     pub bone_pos_list: [BoneJointPos; 30],
-}
-
-impl Default for Bone {
-    fn default() -> Self {
-        return Self {
-            entity_pawn_address: 0,
-            bone_pos_list: [BoneJointPos::default(); 30],
-        };
-    }
 }
 
 impl Bone {
@@ -95,7 +86,7 @@ impl Bone {
 
         if !rpm_offset(
             game_scene_node,
-            (Offsets::CSkeletonInstance::m_modelState as u64 + 0x80) as u64,
+            Offsets::CSkeletonInstance::m_modelState as u64 + 0x80,
             &mut bone_array_address,
         ) {
             return false;
@@ -129,7 +120,7 @@ impl Bone {
             };
         }
 
-        return self.bone_pos_list.len() > 0;
+        !self.bone_pos_list.is_empty()
     }
 }
 
