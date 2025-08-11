@@ -1,8 +1,8 @@
 [package]
 name = "proext"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Snipcola", "asss-whom"]
-edition = "2021"
+edition = "2024"
 license = "MIT"
 
 [dependencies]
