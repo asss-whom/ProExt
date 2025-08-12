@@ -6,7 +6,7 @@ use imgui::{ImColor32, Ui};
 use mint::{Vector2, Vector3};
 
 use crate::cheat::functions::is_feature_toggled;
-use crate::utils::cheat::config::{Config, CONFIG};
+use crate::utils::cheat::config::{CONFIG, Config};
 
 use crate::ui::functions::{color_u32_to_f32, color_with_masked_alpha};
 

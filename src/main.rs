@@ -16,7 +16,7 @@ use crate::config::ProgramConfig;
 use crate::utils::cheat::config::{setup_config, update_configs};
 use crate::utils::cheat::process::{attach_process, get_process_amount};
 use crate::utils::messagebox::{
-    create_dialog, create_messagebox, MessageBoxButtons, MessageBoxResult, MessageBoxStyle,
+    MessageBoxButtons, MessageBoxResult, MessageBoxStyle, create_dialog, create_messagebox,
 };
 
 use crate::cheat::classes::game::init_game_address;
@@ -40,9 +40,11 @@ fn main() {
 
     match setup_config() {
         None => {
-            thread::spawn(|| loop {
-                update_configs();
-                sleep(ProgramConfig::ThreadDelays::UpdateConfigs);
+            thread::spawn(|| {
+                loop {
+                    update_configs();
+                    sleep(ProgramConfig::ThreadDelays::UpdateConfigs);
+                }
             });
         }
         Some(error) => {

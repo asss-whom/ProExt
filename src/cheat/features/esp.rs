@@ -6,9 +6,9 @@ use imgui::{ImColor32, Ui};
 use mint::{Vector2, Vector3, Vector4};
 
 use crate::cheat::functions::{calculate_distance, is_feature_toggled};
-use crate::utils::cheat::config::{Config, CONFIG};
+use crate::utils::cheat::config::{CONFIG, Config};
 
-use crate::cheat::classes::bone::{bone_joint_list, BoneIndex, BoneJointPos};
+use crate::cheat::classes::bone::{BoneIndex, BoneJointPos, bone_joint_list};
 use crate::cheat::classes::view::View;
 
 use crate::ui::functions::{

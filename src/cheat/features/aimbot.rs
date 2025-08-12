@@ -2,7 +2,7 @@ use std::f32::consts::PI;
 use std::sync::{Arc, LazyLock, Mutex};
 use std::time::{Duration, Instant};
 
-use rand::{rngs::ThreadRng, Rng};
+use rand::{Rng, rngs::ThreadRng};
 
 use imgui::Ui;
 use mint::{Vector2, Vector3};
@@ -10,12 +10,12 @@ use mint::{Vector2, Vector3};
 use crate::config::ProgramConfig;
 use crate::ui::functions::{color_u32_to_f32, color_with_masked_alpha, distance_between_vec2};
 
-use crate::utils::cheat::config::{AimbotConfig, AimbotConfigs, Config, CONFIG};
-use crate::utils::mouse::{move_mouse, LAST_MOVED};
+use crate::utils::cheat::config::{AimbotConfig, AimbotConfigs, CONFIG, Config};
+use crate::utils::mouse::{LAST_MOVED, move_mouse};
 
 use crate::cheat::classes::bone::{BoneIndex, BoneJointPos};
 use crate::cheat::classes::view::View;
-use crate::cheat::functions::{is_feature_toggled, WeaponType};
+use crate::cheat::functions::{WeaponType, is_feature_toggled};
 
 pub static FEATURE_TOGGLED: LazyLock<Arc<Mutex<bool>>> =
     LazyLock::new(|| Arc::new(Mutex::new(CONFIG.lock().unwrap().aimbot.default)));
@@ -122,7 +122,7 @@ pub fn run_aimbot(
     let smooth = (config.smooth + smooth_offset).clamp(0.0, 5.0) + base_smooth;
 
     let (screen_center_x, screen_center_y) =
-        ((window_info.1 .0 / 2) as f32, (window_info.1 .1 / 2) as f32);
+        ((window_info.1.0 / 2) as f32, (window_info.1.1 / 2) as f32);
     let mut screen_pos = Vector2 { x: 0.0, y: 0.0 };
 
     if (*LAST_MOVED.lock().unwrap()).elapsed() < ProgramConfig::CheatDelays::Aimbot
@@ -264,10 +264,16 @@ pub fn aimbot_check(
             *entity_address = Some(address);
             *aim_pos = Some(bone_pos_list[bone_index].pos);
 
-            if bone_index == BoneIndex::Head as usize {
-                if let Some(aim_pos) = aim_pos {
-                    aim_pos.z -= -1.0;
-                }
+            if bone_index == BoneIndex::Head as usize
+                && let Some(aim_pos) = aim_pos
+            {
+                aim_pos.z -= -1.0;
+            }
+
+            if bone_index == BoneIndex::Head as usize
+                && let Some(aim_pos) = aim_pos
+            {
+                aim_pos.z -= -1.0;
             }
         }
     }

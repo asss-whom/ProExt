@@ -7,7 +7,7 @@ use mint::Vector4;
 use crate::config::ProgramConfig;
 
 use crate::ui::functions::color_u32_to_f32;
-use crate::utils::cheat::config::{Config, CONFIG};
+use crate::utils::cheat::config::{CONFIG, Config};
 
 pub static WATERMARK_RESET_POSITION: LazyLock<Arc<Mutex<Option<[f32; 2]>>>> =
     LazyLock::new(|| Arc::new(Mutex::new(None)));

@@ -4,7 +4,7 @@ use mki::{Keyboard, Mouse};
 use std::ops::BitAnd;
 
 use crate::ui::menu::MENU_RESET_POSITION;
-use crate::utils::cheat::config::{WindowPositions, CONFIG};
+use crate::utils::cheat::config::{CONFIG, WindowPositions};
 
 use crate::cheat::features::bomb_timer::BOMB_TIMER_RESET_POSITION;
 use crate::cheat::features::cheat_list::CHEAT_LIST_RESET_POSITION;
@@ -13,46 +13,27 @@ use crate::cheat::features::spectator_list::SPECTATOR_LIST_RESET_POSITION;
 use crate::cheat::features::watermark::WATERMARK_RESET_POSITION;
 
 pub fn hotkey_index_to_io(hotkey_index: usize) -> Result<Mouse, Keyboard> {
-    if hotkey_index == 1 {
-        Ok(Mouse::Left)
-    } else if hotkey_index == 2 {
-        return Ok(Mouse::Middle);
-    } else if hotkey_index == 3 {
-        return Ok(Mouse::Right);
-    } else if hotkey_index == 4 {
-        return Ok(Mouse::Side);
-    } else if hotkey_index == 5 {
-        return Ok(Mouse::Extra);
-    } else if hotkey_index == 6 {
-        return Err(Keyboard::LeftShift);
-    } else if hotkey_index == 7 {
-        return Err(Keyboard::LeftControl);
-    } else if hotkey_index == 8 {
-        return Err(Keyboard::F1);
-    } else if hotkey_index == 9 {
-        return Err(Keyboard::F2);
-    } else if hotkey_index == 10 {
-        return Err(Keyboard::F3);
-    } else if hotkey_index == 11 {
-        return Err(Keyboard::F4);
-    } else if hotkey_index == 12 {
-        return Err(Keyboard::F5);
-    } else if hotkey_index == 13 {
-        return Err(Keyboard::F6);
-    } else if hotkey_index == 14 {
-        return Err(Keyboard::F7);
-    } else if hotkey_index == 15 {
-        return Err(Keyboard::F8);
-    } else if hotkey_index == 16 {
-        return Err(Keyboard::F9);
-    } else if hotkey_index == 17 {
-        return Err(Keyboard::F10);
-    } else if hotkey_index == 18 {
-        return Err(Keyboard::F11);
-    } else if hotkey_index == 19 {
-        return Err(Keyboard::F12);
-    } else {
-        return Err(Keyboard::LeftAlt);
+    match hotkey_index {
+        1 => Ok(Mouse::Left),
+        2 => Ok(Mouse::Middle),
+        3 => Ok(Mouse::Right),
+        4 => Ok(Mouse::Side),
+        5 => Ok(Mouse::Extra),
+        6 => Err(Keyboard::LeftShift),
+        7 => Err(Keyboard::LeftControl),
+        8 => Err(Keyboard::F1),
+        9 => Err(Keyboard::F2),
+        10 => Err(Keyboard::F3),
+        11 => Err(Keyboard::F4),
+        12 => Err(Keyboard::F5),
+        13 => Err(Keyboard::F6),
+        14 => Err(Keyboard::F7),
+        15 => Err(Keyboard::F8),
+        16 => Err(Keyboard::F9),
+        17 => Err(Keyboard::F10),
+        18 => Err(Keyboard::F11),
+        19 => Err(Keyboard::F12),
+        _ => Err(Keyboard::LeftAlt),
     }
 }
 

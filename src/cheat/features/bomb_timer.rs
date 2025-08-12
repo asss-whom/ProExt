@@ -5,7 +5,7 @@ use imgui::Ui;
 use mint::Vector4;
 
 use crate::ui::functions::color_u32_to_f32;
-use crate::utils::cheat::config::{Config, CONFIG};
+use crate::utils::cheat::config::{CONFIG, Config};
 
 pub static IS_PLANTED: LazyLock<Arc<Mutex<bool>>> = LazyLock::new(|| Arc::new(Mutex::new(false)));
 pub static PLANT_TIME: LazyLock<Arc<Mutex<Option<Instant>>>> =

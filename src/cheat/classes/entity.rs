@@ -3,7 +3,7 @@ use std::ops::{BitAnd, Shr};
 
 use crate::config::Offsets;
 
-use crate::cheat::functions::{parse_weapon, WeaponType};
+use crate::cheat::functions::{WeaponType, parse_weapon};
 use crate::utils::cheat::process::{rpm, rpm_auto, rpm_offset, trace_address};
 
 use crate::cheat::classes::bone::Bone;

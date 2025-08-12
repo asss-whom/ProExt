@@ -45,10 +45,10 @@ pub fn is_enemy_at_crosshair(
 
     let mut pawn_address: u64 = 0;
 
-    if let Some(sum) = 0x78_u64.checked_mul(u_handle.bitand(0x1FF) as u64) {
-        if !rpm_offset(list_entry, sum, &mut pawn_address) {
-            return (false, false, 0, None);
-        }
+    if let Some(sum) = 0x78_u64.checked_mul(u_handle.bitand(0x1FF) as u64)
+        && !rpm_offset(list_entry, sum, &mut pawn_address)
+    {
+        return (false, false, 0, None);
     }
 
     let mut entity_team_id = 0;

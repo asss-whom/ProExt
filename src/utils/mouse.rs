@@ -2,8 +2,8 @@ use std::sync::{Arc, LazyLock, Mutex};
 use std::time::Instant;
 
 use windows::Win32::UI::Input::KeyboardAndMouse::{
-    SendInput, INPUT, INPUT_MOUSE, MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP, MOUSEEVENTF_MOVE,
-    MOUSEINPUT, MOUSE_EVENT_FLAGS,
+    INPUT, INPUT_MOUSE, MOUSE_EVENT_FLAGS, MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP,
+    MOUSEEVENTF_MOVE, MOUSEINPUT, SendInput,
 };
 use windows::Win32::UI::WindowsAndMessaging::GetCursorPos;
 

@@ -16,11 +16,11 @@ use crate::utils::cheat::config::CONFIG;
 use crate::utils::cheat::process::{rpm, rpm_auto, rpm_offset};
 
 use crate::cheat::classes::entity::{Entity, Flags};
-use crate::cheat::classes::game::{update_entity_list_entry, GAME};
+use crate::cheat::classes::game::{GAME, update_entity_list_entry};
 
 use crate::cheat::features::aimbot::{
-    aimbot_check, get_aimbot_config, get_aimbot_toggled, get_aimbot_yaw_pitch, render_fov_circle,
-    run_aimbot, AB_LOCKED_ENTITY, AB_OFF_ENTITY,
+    AB_LOCKED_ENTITY, AB_OFF_ENTITY, aimbot_check, get_aimbot_config, get_aimbot_toggled,
+    get_aimbot_yaw_pitch, render_fov_circle, run_aimbot,
 };
 use crate::cheat::features::crosshair::{
     get_crosshair_config, get_crosshair_toggled, render_crosshair,
@@ -33,7 +33,7 @@ use crate::cheat::features::esp::{
 use crate::cheat::features::radar::{get_radar_toggled, render_radar};
 use crate::cheat::features::rcs::{get_rcs_config, get_rcs_mouse, get_rcs_toggled, run_rcs};
 use crate::cheat::features::triggerbot::{
-    get_triggerbot_config, get_triggerbot_toggled, run_triggerbot, TB_LOCKED_ENTITY, TB_OFF_ENTITY,
+    TB_LOCKED_ENTITY, TB_OFF_ENTITY, get_triggerbot_config, get_triggerbot_toggled, run_triggerbot,
 };
 
 use crate::cheat::features::bomb_timer::render_bomb_timer;
@@ -274,8 +274,11 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
                 };
 
             // Bomb
-            if !no_pawn && config.esp.bomb_enabled && bomb_site.is_some() && bomb_pos.is_some() {
-                let (bomb_site, bomb_pos) = (bomb_site.clone().unwrap(), bomb_pos.unwrap());
+            if !no_pawn
+                && config.esp.bomb_enabled
+                && let Some(bomb_site) = bomb_site.clone()
+                && let Some(bomb_pos) = bomb_pos
+            {
                 let mut bomb_screen_pos = Vector2 { x: 0.0, y: 0.0 };
 
                 if game
@@ -437,8 +440,8 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
                 if !no_pawn && config.aimbot.enabled {
                     aimbot_check(
                         bone.bone_pos_list,
-                        window_info.1 .0,
-                        window_info.1 .1,
+                        window_info.1.0,
+                        window_info.1.1,
                         &mut aim_pos,
                         &mut max_aim_distance,
                         &mut aim_entity_address,
@@ -504,8 +507,8 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
 
                 // Rect Check
                 let (max_width, max_height) = (
-                    (window_info.1 .0 as f32 * 1.5),
-                    (window_info.1 .1 as f32 * 1.5),
+                    (window_info.1.0 as f32 * 1.5),
+                    (window_info.1.1 as f32 * 1.5),
                 );
 
                 if rect.x.abs() >= max_width
@@ -522,7 +525,7 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
                     (*render_list.lock().unwrap()).insert(
                         format!("snap_line_{}", i),
                         Box::new(move |ui| {
-                            render_snap_line(ui, rect, config, window_info.1 .0, window_info.1 .1);
+                            render_snap_line(ui, rect, config, window_info.1.0, window_info.1.1);
                         }),
                     );
                 } else {
@@ -680,8 +683,8 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
                         render_crosshair(
                             ui,
                             Vector2 {
-                                x: window_info.1 .0 as f32 / 2.0,
-                                y: window_info.1 .1 as f32 / 2.0,
+                                x: window_info.1.0 as f32 / 2.0,
+                                y: window_info.1.1 as f32 / 2.0,
                             },
                             aiming_at_enemy && allow_shoot,
                             crosshair_config,
@@ -699,8 +702,8 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
                     Box::new(move |ui| {
                         render_headshot_line(
                             ui,
-                            window_info.1 .0,
-                            window_info.1 .1,
+                            window_info.1.0,
+                            window_info.1.1,
                             local_entity.pawn.fov,
                             local_entity.pawn.view_angle.x,
                             config,
@@ -722,8 +725,8 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
                     Box::new(move |ui| {
                         render_fov_circle(
                             ui,
-                            window_info.1 .0,
-                            window_info.1 .1,
+                            window_info.1.0,
+                            window_info.1.1,
                             local_entity.pawn.fov,
                             aimbot_info,
                             aimbot_config,
@@ -769,30 +772,28 @@ pub fn run_cheats_thread(hwnd: HWND, self_hwnd: HWND) {
                 && aiming_at_pos.is_some();
 
             // RCS
-            if let Some(rcs_info) = rcs_info {
-                if !aimbot_toggled {
-                    run_rcs(rcs_info);
-                }
+            if let Some(rcs_info) = rcs_info
+                && !aimbot_toggled
+            {
+                run_rcs(rcs_info);
             }
 
             // Aimbot
-            if aimbot_toggled {
-                if let Some(aimbot_info) = aimbot_info {
-                    if let Some(aim_pos) = aim_pos {
-                        if let Some(entity_index) = aim_entity_address {
-                            run_aimbot(
-                                aimbot_config,
-                                aimbot_info,
-                                window_info,
-                                game.view,
-                                aim_pos,
-                                entity_index,
-                                rcs_info,
-                                &mut rng,
-                            );
-                        }
-                    }
-                }
+            if aimbot_toggled
+                && let Some(aimbot_info) = aimbot_info
+                && let Some(aim_pos) = aim_pos
+                && let Some(entity_index) = aim_entity_address
+            {
+                run_aimbot(
+                    aimbot_config,
+                    aimbot_info,
+                    window_info,
+                    game.view,
+                    aim_pos,
+                    entity_index,
+                    rcs_info,
+                    &mut rng,
+                );
             }
 
             // Aimbot Lock

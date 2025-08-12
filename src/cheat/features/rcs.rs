@@ -2,13 +2,13 @@ use std::sync::{Arc, LazyLock, Mutex};
 use std::time::Instant;
 
 use mint::Vector2;
-use rand::{rngs::ThreadRng, Rng};
+use rand::{Rng, rngs::ThreadRng};
 
-use crate::utils::cheat::config::{Config, RCSConfig, RCSConfigs, CONFIG};
+use crate::utils::cheat::config::{CONFIG, Config, RCSConfig, RCSConfigs};
 use crate::utils::mouse::move_mouse;
 
 use crate::cheat::classes::entity::CUtlVector;
-use crate::cheat::functions::{cache_to_punch, is_feature_toggled, WeaponType};
+use crate::cheat::functions::{WeaponType, cache_to_punch, is_feature_toggled};
 
 pub static FEATURE_TOGGLED: LazyLock<Arc<Mutex<bool>>> =
     LazyLock::new(|| Arc::new(Mutex::new(CONFIG.lock().unwrap().rcs.default)));

@@ -6,15 +6,15 @@ use glutin::event_loop::EventLoop;
 use imgui::{Context, Ui};
 use imgui_winit_support::WinitPlatform;
 
-use rand::{distr::Alphanumeric, rng, Rng};
+use rand::{Rng, distr::Alphanumeric, rng};
 
 use crate::config::ProgramConfig;
 use crate::ui::thread::run_event_loop;
 
-use crate::utils::messagebox::{create_messagebox, MessageBoxStyle};
+use crate::utils::messagebox::{MessageBoxStyle, create_messagebox};
 use crate::utils::ui::imgui::init_imgui;
 use crate::utils::ui::windows::{
-    create_window, find_window, set_window_brush_to_transparent, Window,
+    Window, create_window, find_window, set_window_brush_to_transparent,
 };
 
 pub static WINDOW_INFO: LazyLock<Arc<Mutex<Option<((i32, i32), (i32, i32))>>>> =
@@ -45,7 +45,7 @@ pub fn init_gui() {
                 MessageBoxStyle::Error,
                 "Error",
                 &format!("Failed to find {} window.", window_title),
-            )
+            );
         }
     };
 
@@ -61,7 +61,7 @@ pub fn init_gui() {
                 MessageBoxStyle::Error,
                 "Error",
                 &format!("Failed to find {} window.", ProgramConfig::Package::Name),
-            )
+            );
         }
     };
 

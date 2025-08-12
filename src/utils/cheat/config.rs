@@ -1,4 +1,4 @@
-use std::fs::{create_dir_all, metadata, read_dir, remove_file, File, OpenOptions};
+use std::fs::{File, OpenOptions, create_dir_all, metadata, read_dir, remove_file};
 use std::path::PathBuf;
 use std::sync::{Arc, LazyLock, Mutex};
 
@@ -772,13 +772,13 @@ pub static CONFIG: LazyLock<Arc<Mutex<Config>>> =
     LazyLock::new(|| Arc::new(Mutex::new(Config::default())));
 
 pub fn get_directory_dir(name: &str) -> Option<String> {
-    if let Some(user_dirs) = UserDirs::new() {
-        if let Some(document_dir) = user_dirs.document_dir() {
-            let config_dir = document_dir.join(name);
+    if let Some(user_dirs) = UserDirs::new()
+        && let Some(document_dir) = user_dirs.document_dir()
+    {
+        let config_dir = document_dir.join(name);
 
-            if let Some(config_path) = config_dir.to_str() {
-                return Some(config_path.to_owned());
-            };
+        if let Some(config_path) = config_dir.to_str() {
+            return Some(config_path.to_owned());
         };
     };
 
@@ -810,22 +810,21 @@ pub fn update_configs() -> Option<String> {
     let mut update_default_config = false;
 
     for entry in paths.flatten() {
-        if let Some(file_name) = entry.file_name().to_str() {
-            if file_name.ends_with(&format!(".{}", *CONFIG_EXTENSION)) {
-                if let Some(config_path) = directory_pathbuf.join(file_name).to_str() {
-                    match load_config(config_path) {
-                        Ok(config) => {
-                            let (config_index, _) =
-                                configs.insert_full(file_name.to_string(), Some(config));
+        if let Some(file_name) = entry.file_name().to_str()
+            && file_name.ends_with(&format!(".{}", *CONFIG_EXTENSION))
+            && let Some(config_path) = directory_pathbuf.join(file_name).to_str()
+        {
+            match load_config(config_path) {
+                Ok(config) => {
+                    let (config_index, _) =
+                        configs.insert_full(file_name.to_string(), Some(config));
 
-                            if file_name == *DEFAULT_CONFIG {
-                                configs.move_index(config_index, 0);
-                            }
-                        }
-                        Err(_) => {
-                            configs.insert_full(file_name.to_string(), None);
-                        }
+                    if file_name == *DEFAULT_CONFIG {
+                        configs.move_index(config_index, 0);
                     }
+                }
+                Err(_) => {
+                    configs.insert_full(file_name.to_string(), None);
                 }
             }
         }
@@ -839,19 +838,17 @@ pub fn update_configs() -> Option<String> {
         update_default_config = true;
     }
 
-    if update_default_config {
-        if let Some(default_config_path) = directory_pathbuf.join(default_config_name).to_str() {
-            if CONFIG
-                .lock()
-                .unwrap()
-                .clone()
-                .save_config(default_config_path, false)
-                .is_err()
-            {
-                return Some("SaveDefaultConfig".to_string());
-            };
-        }
-    }
+    if update_default_config
+        && let Some(default_config_path) = directory_pathbuf.join(default_config_name).to_str()
+        && CONFIG
+            .lock()
+            .unwrap()
+            .clone()
+            .save_config(default_config_path, false)
+            .is_err()
+    {
+        return Some("SaveDefaultConfig".to_string());
+    };
 
     *CONFIGS.lock().unwrap() = configs;
     None

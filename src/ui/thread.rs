@@ -3,7 +3,7 @@ use std::sync::{Arc, LazyLock, Mutex};
 use std::thread::{self, sleep};
 use std::time::Instant;
 
-use glow::{HasContext, COLOR_BUFFER_BIT};
+use glow::{COLOR_BUFFER_BIT, HasContext};
 use mki::{Action, InhibitEvent, State};
 
 use glutin::dpi::{PhysicalPosition, PhysicalSize};
@@ -25,7 +25,7 @@ use crate::ui::menu::render_menu;
 
 use crate::utils::mouse::get_mouse_position;
 use crate::utils::ui::windows::{
-    focus_window, get_glow_context, get_window_info, is_window_focused, Window,
+    Window, focus_window, get_glow_context, get_window_info, is_window_focused,
 };
 
 pub static MOUSE_POS: LazyLock<Arc<Mutex<Option<(i32, i32)>>>> =

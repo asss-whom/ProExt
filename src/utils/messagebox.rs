@@ -1,8 +1,8 @@
-use windows::core::HSTRING;
 use windows::Win32::Foundation::HWND;
 use windows::Win32::UI::WindowsAndMessaging::{
-    MessageBoxW, MB_ICONERROR, MB_ICONWARNING, MB_OKCANCEL, MESSAGEBOX_RESULT, MESSAGEBOX_STYLE,
+    MB_ICONERROR, MB_ICONWARNING, MB_OKCANCEL, MESSAGEBOX_RESULT, MESSAGEBOX_STYLE, MessageBoxW,
 };
+use windows::core::HSTRING;
 
 pub enum MessageBoxStyle {
     Warning,

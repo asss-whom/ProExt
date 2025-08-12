@@ -4,7 +4,7 @@ use imgui::Ui;
 use mint::Vector4;
 
 use crate::config::ProgramConfig;
-use crate::utils::cheat::config::{Config, CONFIG};
+use crate::utils::cheat::config::{CONFIG, Config};
 
 use crate::ui::functions::color_u32_to_f32;
 

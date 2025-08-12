@@ -2,12 +2,12 @@ use std::sync::{Arc, LazyLock, Mutex};
 use std::time::{Duration, Instant};
 
 use mint::Vector3;
-use rand::{rngs::ThreadRng, Rng};
+use rand::{Rng, rngs::ThreadRng};
 
-use crate::utils::mouse::{click_mouse, press_mouse, release_mouse, MOUSE_LOCKED};
+use crate::utils::mouse::{MOUSE_LOCKED, click_mouse, press_mouse, release_mouse};
 
-use crate::cheat::functions::{calculate_distance, is_feature_toggled, WeaponType};
-use crate::utils::cheat::config::{Config, TriggerbotConfig, TriggerbotConfigs, CONFIG};
+use crate::cheat::functions::{WeaponType, calculate_distance, is_feature_toggled};
+use crate::utils::cheat::config::{CONFIG, Config, TriggerbotConfig, TriggerbotConfigs};
 
 pub static FEATURE_TOGGLED: LazyLock<Arc<Mutex<bool>>> =
     LazyLock::new(|| Arc::new(Mutex::new(CONFIG.lock().unwrap().triggerbot.default)));

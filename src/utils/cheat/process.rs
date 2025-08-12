@@ -1,4 +1,4 @@
-use std::ffi::{c_void, OsString};
+use std::ffi::{OsString, c_void};
 use std::mem;
 use std::os::windows::prelude::OsStringExt;
 use std::sync::{Arc, LazyLock, Mutex};
@@ -6,8 +6,8 @@ use std::sync::{Arc, LazyLock, Mutex};
 use windows::Win32::Foundation::{CloseHandle, HANDLE};
 use windows::Win32::System::Diagnostics::Debug::ReadProcessMemory;
 use windows::Win32::System::Diagnostics::ToolHelp::{
-    CreateToolhelp32Snapshot, Module32NextW, Process32NextW, CREATE_TOOLHELP_SNAPSHOT_FLAGS,
-    MODULEENTRY32W, PROCESSENTRY32W, TH32CS_SNAPMODULE,
+    CREATE_TOOLHELP_SNAPSHOT_FLAGS, CreateToolhelp32Snapshot, MODULEENTRY32W, Module32NextW,
+    PROCESSENTRY32W, Process32NextW, TH32CS_SNAPMODULE,
 };
 use windows::Win32::System::Threading::{OpenProcess, PROCESS_ALL_ACCESS, PROCESS_CREATE_THREAD};
 

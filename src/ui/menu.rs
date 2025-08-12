@@ -9,9 +9,9 @@ use crate::ui::functions::{color_edit_u32_tuple, reset_window_positions};
 use crate::ui::main::BG_ALPHA;
 
 use crate::utils::cheat::config::{
-    delete_config, Config, CONFIG, CONFIGS, CONFIG_DIR, CONFIG_EXTENSION, DEFAULT_CONFIG,
+    CONFIG, CONFIG_DIR, CONFIG_EXTENSION, CONFIGS, Config, DEFAULT_CONFIG, delete_config,
 };
-use crate::utils::messagebox::{create_messagebox, MessageBoxStyle};
+use crate::utils::messagebox::{MessageBoxStyle, create_messagebox};
 
 static NEW_CONFIG_NAME: LazyLock<Arc<Mutex<String>>> =
     LazyLock::new(|| Arc::new(Mutex::new(String::new())));
@@ -1475,10 +1475,10 @@ pub fn render_menu(ui: &mut Ui) {
                         if let Some(config_item) = config_item {
                             let mut loaded = false;
 
-                            if let Some(loaded_config) = &loaded_conf {
-                                if &config_name == loaded_config {
-                                    loaded = true;
-                                }
+                            if let Some(loaded_config) = &loaded_conf
+                                && &config_name == loaded_config
+                            {
+                                loaded = true;
                             }
 
                             if ui
@@ -1519,33 +1519,30 @@ pub fn render_menu(ui: &mut Ui) {
                         {
                             ui.separator();
 
-                            if ui.button("Save##Config") {
-                                if let Err(error) = (*config).save_config(config_path, false) {
-                                    create_messagebox(
-                                        MessageBoxStyle::Error,
-                                        "Error",
-                                        &format!(
-                                            "Failed to save config: {} ({}).",
-                                            config_name, error
-                                        ),
-                                    )
-                                }
+                            if ui.button("Save##Config")
+                                && let Err(error) = (*config).save_config(config_path, false)
+                            {
+                                create_messagebox(
+                                    MessageBoxStyle::Error,
+                                    "Error",
+                                    &format!("Failed to save config: {} ({}).", config_name, error),
+                                )
                             }
 
                             if config_name != &*DEFAULT_CONFIG {
                                 ui.same_line();
 
-                                if ui.button("Delete##Config") {
-                                    if let Err(error) = delete_config(config_path) {
-                                        create_messagebox(
-                                            MessageBoxStyle::Error,
-                                            "Error",
-                                            &format!(
-                                                "Failed to delete config: {} ({}).",
-                                                config_name, error
-                                            ),
-                                        )
-                                    }
+                                if ui.button("Delete##Config")
+                                    && let Err(error) = delete_config(config_path)
+                                {
+                                    create_messagebox(
+                                        MessageBoxStyle::Error,
+                                        "Error",
+                                        &format!(
+                                            "Failed to delete config: {} ({}).",
+                                            config_name, error
+                                        ),
+                                    )
                                 }
                             }
                         }
@@ -1592,11 +1589,11 @@ pub fn render_menu(ui: &mut Ui) {
                     loaded_config.replace(&format!(".{}", *CONFIG_EXTENSION), "")
                 ));
 
-                if let Some(Some(current_config)) = configs.get(loaded_config) {
-                    if current_config != &*config {
-                        ui.same_line();
-                        ui.text("(modified)");
-                    }
+                if let Some(Some(current_config)) = configs.get(loaded_config)
+                    && current_config != &*config
+                {
+                    ui.same_line();
+                    ui.text("(modified)");
                 }
             }
         });

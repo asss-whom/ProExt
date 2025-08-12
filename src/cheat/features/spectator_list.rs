@@ -7,7 +7,7 @@ use mint::Vector4;
 use crate::config::Offsets;
 use crate::ui::functions::color_u32_to_f32;
 
-use crate::utils::cheat::config::{Config, CONFIG};
+use crate::utils::cheat::config::{CONFIG, Config};
 use crate::utils::cheat::process::rpm_offset;
 
 pub static SPECTATOR_LIST_RESET_POSITION: LazyLock<Arc<Mutex<Option<[f32; 2]>>>> =

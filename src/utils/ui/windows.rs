@@ -1,14 +1,14 @@
 use glutin::event_loop::EventLoop;
 use glutin::platform::windows::WindowBuilderExtWindows;
-use glutin::{window::WindowBuilder, ContextBuilder, PossiblyCurrent, WindowedContext};
+use glutin::{ContextBuilder, PossiblyCurrent, WindowedContext, window::WindowBuilder};
 
-use windows::core::{HSTRING, PCWSTR};
 use windows::Win32::Foundation::{HWND, POINT, RECT};
 use windows::Win32::Graphics::Gdi::ClientToScreen;
 use windows::Win32::UI::WindowsAndMessaging::{
-    FindWindowW, GetClientRect, GetForegroundWindow, IsWindow, SetClassLongPtrW,
-    SetForegroundWindow, SetWindowDisplayAffinity, GCLP_HBRBACKGROUND, WINDOW_DISPLAY_AFFINITY,
+    FindWindowW, GCLP_HBRBACKGROUND, GetClientRect, GetForegroundWindow, IsWindow,
+    SetClassLongPtrW, SetForegroundWindow, SetWindowDisplayAffinity, WINDOW_DISPLAY_AFFINITY,
 };
+use windows::core::{HSTRING, PCWSTR};
 
 pub type Window = WindowedContext<PossiblyCurrent>;
 
@@ -22,10 +22,10 @@ pub fn find_window(title: &str, class: Option<&str>) -> Option<HWND> {
             None => FindWindowW(PCWSTR::null(), &HSTRING::from(title.to_string())),
         };
 
-        if let Ok(hwnd) = hwnd {
-            if IsWindow(Some(hwnd)).into() {
-                return Some(hwnd);
-            }
+        if let Ok(hwnd) = hwnd
+            && IsWindow(Some(hwnd)).into()
+        {
+            return Some(hwnd);
         }
     }
 

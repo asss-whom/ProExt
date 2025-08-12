@@ -4,8 +4,8 @@ use std::time::Instant;
 use imgui::{ImColor32, Ui};
 use mint::Vector2;
 
-use crate::cheat::functions::{is_feature_toggled, WeaponType};
-use crate::utils::cheat::config::{Config, CrosshairConfig, CrosshairConfigs, CONFIG};
+use crate::cheat::functions::{WeaponType, is_feature_toggled};
+use crate::utils::cheat::config::{CONFIG, Config, CrosshairConfig, CrosshairConfigs};
 
 use crate::ui::functions::{color_u32_to_f32, color_with_masked_alpha};
 
