@@ -3,83 +3,113 @@
 pub mod Offsets {
     // https://raw.githubusercontent.com/a2x/cs2-dumper/refs/heads/main/output/offsets.rs
     pub mod client_dll {
-        pub const dwEntityList: usize = 0x1CBE620;
-        pub const dwLocalPlayerController: usize = 0x1D10240;
-        pub const dwLocalPlayerPawn: usize = 0x1AF4B80;
-        pub const dwPlantedC4: usize = 0x1D27180;
-        pub const dwViewAngles: usize = 0x1D2C7C0;
-        pub const dwViewMatrix: usize = 0x1D21A00;
+        use crate::offset::offsets::cs2_dumper::offsets::client_dll;
+
+        pub const dwEntityList: usize = client_dll::dwEntityList;
+        pub const dwLocalPlayerController: usize = client_dll::dwLocalPlayerController;
+        pub const dwLocalPlayerPawn: usize = client_dll::dwLocalPlayerPawn;
+        pub const dwPlantedC4: usize = client_dll::dwPlantedC4;
+        pub const dwViewAngles: usize = client_dll::dwViewAngles;
+        pub const dwViewMatrix: usize = client_dll::dwViewMatrix;
     }
 
     // https://raw.githubusercontent.com/a2x/cs2-dumper/refs/heads/main/output/client_dll.rs
     pub mod C_BaseEntity {
-        pub const m_iHealth: usize = 0x34C; // int32
-        pub const m_iTeamNum: usize = 0x3EB; // uint8
-        pub const m_pGameSceneNode: usize = 0x330; // CGameSceneNode*
-        pub const m_fFlags: usize = 0x3F8; // uint32
-        pub const m_nSubclassID: usize = 0x380; // CUtlStringToken
+        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::C_BaseEntity;
+
+        pub const m_iHealth: usize = C_BaseEntity::m_iHealth; // int32
+        pub const m_iTeamNum: usize = C_BaseEntity::m_iTeamNum; // uint8
+        pub const m_pGameSceneNode: usize = C_BaseEntity::m_pGameSceneNode; // CGameSceneNode*
+        pub const m_fFlags: usize = C_BaseEntity::m_fFlags; // uint32
+        pub const m_nSubclassID: usize = C_BaseEntity::m_nSubclassID; // CUtlStringToken
     }
 
     pub mod CBasePlayerController {
-        pub const m_hPawn: usize = 0x6B4; // CHandle<C_BasePlayerPawn>
-        pub const m_iszPlayerName: usize = 0x6E8; // char[128]
+        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::CBasePlayerController;
+
+        pub const m_hPawn: usize = CBasePlayerController::m_hPawn; // CHandle<C_BasePlayerPawn>
+        pub const m_iszPlayerName: usize = CBasePlayerController::m_iszPlayerName; // char[128]
     }
 
     pub mod CCSPlayerController {
-        pub const m_hPlayerPawn: usize = 0x8FC; // CHandle<C_CSPlayerPawn>
-        pub const m_bPawnIsAlive: usize = 0x904; // bool
+        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::CCSPlayerController;
+
+        pub const m_hPlayerPawn: usize = CCSPlayerController::m_hPlayerPawn; // CHandle<C_CSPlayerPawn>
+        pub const m_bPawnIsAlive: usize = CCSPlayerController::m_bPawnIsAlive; // bool
     }
 
     pub mod C_BasePlayerPawn {
-        pub const m_pObserverServices: usize = 0x1418; // CPlayer_ObserverServices*
-        pub const m_pCameraServices: usize = 0x1438; // CPlayer_CameraServices*
-        pub const m_vOldOrigin: usize = 0x15B0; // Vector
+        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::C_BasePlayerPawn;
+
+        pub const m_pObserverServices: usize = C_BasePlayerPawn::m_pObserverServices; // CPlayer_ObserverServices*
+        pub const m_pCameraServices: usize = C_BasePlayerPawn::m_pCameraServices; // CPlayer_CameraServices*
+        pub const m_vOldOrigin: usize = C_BasePlayerPawn::m_vOldOrigin; // Vector
     }
 
     pub mod C_CSPlayerPawnBase {
-        pub const m_vecLastClipCameraPos: usize = 0x1604; // Vector
-        pub const m_angEyeAngles: usize = 0x16A0; // QAngle
-        pub const m_pClippingWeapon: usize = 0x1620; // C_CSWeaponBase*
-        pub const m_iIDEntIndex: usize = 0x1734; // CEntityIndex
-        pub const m_entitySpottedState: usize = 0x2898; // EntitySpottedState_t
-        pub const m_ArmorValue: usize = 0x28E4; // int32
-        pub const m_iShotsFired: usize = 0x28C4; // int32
+        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::C_CSPlayerPawnBase;
+
+        pub const m_vecLastClipCameraPos: usize = C_CSPlayerPawnBase::m_vecLastClipCameraPos; // Vector
+        pub const m_angEyeAngles: usize = C_CSPlayerPawnBase::m_angEyeAngles; // QAngle
+        pub const m_pClippingWeapon: usize = C_CSPlayerPawnBase::m_pClippingWeapon; // C_CSWeaponBase*
+        pub const m_iIDEntIndex: usize = C_CSPlayerPawnBase::m_iIDEntIndex; // CEntityIndex
     }
 
     pub mod C_CSPlayerPawn {
-        pub const m_aimPunchCache: usize = 0x1880; // CUtlVector<QAngle>
+        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::C_CSPlayerPawn;
+
+        pub const m_aimPunchCache: usize = C_CSPlayerPawn::m_aimPunchCache; // CUtlVector<QAngle>
+        pub const m_entitySpottedState: usize = C_CSPlayerPawn::m_entitySpottedState; // EntitySpottedState_t
+        pub const m_ArmorValue: usize = C_CSPlayerPawn::m_ArmorValue; // int32
+        pub const m_iShotsFired: usize = C_CSPlayerPawn::m_iShotsFired; // int32
     }
 
     pub mod CGameSceneNode {
-        pub const m_vecAbsOrigin: usize = 0xD0; // Vector
+        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::CGameSceneNode;
+
+        pub const m_vecAbsOrigin: usize = CGameSceneNode::m_vecAbsOrigin; // Vector
     }
 
     pub mod CCSPlayerBase_CameraServices {
-        pub const m_iFOVStart: usize = 0x28C; // uint32
+        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::CCSPlayerBase_CameraServices;
+
+        pub const m_iFOVStart: usize = CCSPlayerBase_CameraServices::m_iFOVStart; // uint32
     }
 
     pub mod EntitySpottedState_t {
-        pub const m_bSpottedByMask: usize = 0xC; // uint32[2]
+        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::EntitySpottedState_t;
+
+        pub const m_bSpottedByMask: usize = EntitySpottedState_t::m_bSpottedByMask; // uint32[2]
     }
 
     pub mod CSkeletonInstance {
-        pub const m_modelState: usize = 0x170; // CModelState
+        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::CSkeletonInstance;
+
+        pub const m_modelState: usize = CSkeletonInstance::m_modelState; // CModelState
     }
 
     pub mod CPlayer_ObserverServices {
-        pub const m_hObserverTarget: usize = 0x44; // CHandle<C_BaseEntity>
+        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::CPlayer_ObserverServices;
+
+        pub const m_hObserverTarget: usize = CPlayer_ObserverServices::m_hObserverTarget; // CHandle<C_BaseEntity>
     }
 
     pub mod C_PlantedC4 {
-        pub const m_nBombSite: usize = 0x1174; // int32
+        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::C_PlantedC4;
+
+        pub const m_nBombSite: usize = C_PlantedC4::m_nBombSite; // int32
     }
 
     pub mod CBasePlayerWeaponVData {
-        pub const m_iMaxClip1: usize = 0x3E0; // int32
+        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::CBasePlayerWeaponVData;
+
+        pub const m_iMaxClip1: usize = CBasePlayerWeaponVData::m_iMaxClip1; // int32
     }
 
     pub mod C_BasePlayerWeapon {
-        pub const m_iClip1: usize = 0x1900; // int32
+        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::C_BasePlayerWeapon;
+
+        pub const m_iClip1: usize = C_BasePlayerWeapon::m_iClip1; // int32
     }
 }
 

@@ -5,6 +5,7 @@
 
 mod cheat;
 mod config;
+mod offset;
 mod ui;
 mod utils;
 

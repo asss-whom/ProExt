@@ -303,7 +303,7 @@ impl PlayerPawn {
     pub fn get_spotted(&mut self) -> bool {
         rpm_offset(
             self.address,
-            (Offsets::C_CSPlayerPawnBase::m_entitySpottedState
+            (Offsets::C_CSPlayerPawn::m_entitySpottedState
                 + Offsets::EntitySpottedState_t::m_bSpottedByMask) as u64,
             &mut self.spotted_by_mask,
         )
@@ -384,7 +384,7 @@ impl PlayerPawn {
     pub fn get_shots_fired(&mut self) -> bool {
         rpm_offset(
             self.address,
-            Offsets::C_CSPlayerPawnBase::m_iShotsFired as u64,
+            Offsets::C_CSPlayerPawn::m_iShotsFired as u64,
             &mut self.shots_fired,
         )
     }
@@ -416,7 +416,7 @@ impl PlayerPawn {
     pub fn get_armor(&mut self) -> bool {
         rpm_offset(
             self.address,
-            Offsets::C_CSPlayerPawnBase::m_ArmorValue as u64,
+            Offsets::C_CSPlayerPawn::m_ArmorValue as u64,
             &mut self.armor,
         )
     }
