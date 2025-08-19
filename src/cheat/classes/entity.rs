@@ -287,7 +287,7 @@ impl PlayerPawn {
     pub fn get_view_angle(&mut self) -> bool {
         rpm_offset(
             self.address,
-            Offsets::C_CSPlayerPawnBase::m_angEyeAngles as u64,
+            Offsets::C_CSPlayerPawn::m_angEyeAngles as u64,
             &mut self.view_angle,
         )
     }
@@ -295,7 +295,7 @@ impl PlayerPawn {
     pub fn get_camera_pos(&mut self) -> bool {
         rpm_offset(
             self.address,
-            Offsets::C_CSPlayerPawnBase::m_vecLastClipCameraPos as u64,
+            Offsets::C_CSPlayerPawn::m_vecLastClipCameraPos as u64,
             &mut self.camera_pos,
         )
     }
@@ -312,7 +312,7 @@ impl PlayerPawn {
     pub fn get_weapon(&mut self) -> bool {
         // Weapon Name & Type
         let weapon_name_address = trace_address(
-            self.address + Offsets::C_CSPlayerPawnBase::m_pClippingWeapon as u64,
+            self.address + Offsets::C_CSPlayerPawn::m_pClippingWeapon as u64,
             &[0x10, 0x20, 0x0],
         );
         let mut buffer: [u8; 50] = [0; 50];
@@ -346,7 +346,7 @@ impl PlayerPawn {
 
         if !rpm_offset(
             self.address,
-            Offsets::C_CSPlayerPawnBase::m_pClippingWeapon as u64,
+            Offsets::C_CSPlayerPawn::m_pClippingWeapon as u64,
             &mut clipping_weapon,
         ) {
             return false;
