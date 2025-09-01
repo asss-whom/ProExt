@@ -1,6 +1,6 @@
 [package]
 name = "proext"
-version = "0.4.1"
+version = "0.4.2"
 authors = ["Snipcola", "asss-whom"]
 edition = "2024"
 license = "MIT"

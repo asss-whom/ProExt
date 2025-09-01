@@ -46,12 +46,6 @@ pub mod Offsets {
         pub const m_vOldOrigin: usize = C_BasePlayerPawn::m_vOldOrigin; // Vector
     }
 
-    pub mod C_CSPlayerPawnBase {
-        use crate::offset::client_dll::cs2_dumper::schemas::client_dll::C_CSPlayerPawnBase;
-
-        pub const m_iIDEntIndex: usize = C_CSPlayerPawnBase::m_iIDEntIndex; // CEntityIndex
-    }
-
     pub mod C_CSPlayerPawn {
         use crate::offset::client_dll::cs2_dumper::schemas::client_dll::C_CSPlayerPawn;
 
@@ -62,6 +56,7 @@ pub mod Offsets {
         pub const m_vecLastClipCameraPos: usize = C_CSPlayerPawn::m_vecLastClipCameraPos; // Vector
         pub const m_angEyeAngles: usize = C_CSPlayerPawn::m_angEyeAngles; // QAngle
         pub const m_pClippingWeapon: usize = C_CSPlayerPawn::m_pClippingWeapon; // C_CSWeaponBase*
+        pub const m_iIDEntIndex: usize = C_CSPlayerPawn::m_iIDEntIndex; // CEntityIndex
     }
 
     pub mod CGameSceneNode {

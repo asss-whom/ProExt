@@ -20,7 +20,7 @@ pub fn is_enemy_at_crosshair(
 
     if !rpm_offset(
         local_entity_pawn_address,
-        Offsets::C_CSPlayerPawnBase::m_iIDEntIndex as u64,
+        Offsets::C_CSPlayerPawn::m_iIDEntIndex as u64,
         &mut u_handle,
     ) {
         return (false, false, 0, None);
@@ -28,7 +28,7 @@ pub fn is_enemy_at_crosshair(
 
     if !rpm_offset(
         local_entity_pawn_address,
-        Offsets::C_CSPlayerPawnBase::m_iIDEntIndex as u64,
+        Offsets::C_CSPlayerPawn::m_iIDEntIndex as u64,
         &mut u_handle,
     ) {
         return (false, false, 0, None);
