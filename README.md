@@ -83,3 +83,8 @@ To use ProExt, you can follow the methods.
   ```
   engine_no_focus_sleep 0
   ```
+
+- **Cannot find value `m_aimPunchCache` in module `C_CSPlayerPawn`**
+ 
+  `m_aimPunchCache` can be found in server_dll.rs.
+
