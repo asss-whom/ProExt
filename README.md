@@ -6,6 +6,8 @@ _An open-source, customizable cheat for Counter-Strike 2._
 
 </div>
 
+# ⛔ This project is no longer maintained and does not work properly.
+
 ## ⚠️ About This Project
 
 This project was originally based on the code from [snipcola/ProExt](https://github.com/snipcola/ProExt), which is now archived and can’t be updated anymore. To continue maintaining and developing related features, I created this new repository.
